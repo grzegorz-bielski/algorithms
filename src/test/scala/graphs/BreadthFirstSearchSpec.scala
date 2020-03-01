@@ -26,8 +26,25 @@ class BreadthFirstSearchSpec extends FlatSpec with Matchers {
   "apply" should "not return None when there is no nodes that would satisfy the predicate" in {
     BreadthFirstSearch[Node](
       graph,
-      Node("me"),
+      Node("ja"),
       node => node.name.startsWith("x")
     ) should be(None)
   }
+
+  "applyNoTailRec" should "return closest Some(node) that satisfies given predicate" in {
+    BreadthFirstSearch.applyNoTailRec[Node](
+      graph,
+      Node("me"),
+      node => node.name.startsWith("p")
+    ) should be(Some(Node("pa")))
+  }
+
+  "applyNoTailRec" should "not return None when there is no nodes that would satisfy the predicate" in {
+    BreadthFirstSearch.applyNoTailRec[Node](
+      graph,
+      Node("je"),
+      node => node.name.startsWith("x")
+    ) should be(None)
+  }
+
 }
