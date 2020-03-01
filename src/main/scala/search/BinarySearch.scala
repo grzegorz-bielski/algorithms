@@ -3,7 +3,8 @@ package search
 import scala.annotation.tailrec
 
 object BinarySearch {
-  def search[T: Ordering](items: Seq[T], item: T): Option[Int] = {
+  def apply[T: Ordering](items: Seq[T], item: T): Option[Int] = {
+
     @tailrec
     def go(low: Int, high: Int): Option[Int] = {
       if (low > high) None
