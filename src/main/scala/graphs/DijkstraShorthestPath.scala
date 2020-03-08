@@ -1,66 +1,53 @@
 package graphs
 
-package graphs
-
 import scala.annotation.tailrec
+import scala.collection.immutable.Queue
 
 object DijkstraShorthestPath {
   type Value = Double
   type WeightedGraph[T] = Map[T, Map[T, Value]]
   type Costs[T] = Map[T, Value]
-  type Parents[T] = Map[T, T]
 
-  def apply[T](graph: WeightedGraph[T]): Unit = {
+  def apply[T](graph: WeightedGraph[T], source: T) = {
     val initialCosts =
       graph.keys.foldLeft(Map[T, Value]())((acc, t) =>
-        acc + (t -> Double.PositiveInfinity)
+        (acc + (if (t == source) (t -> 0) else (t -> Double.PositiveInfinity)))
       )
+    val initialVisited = Set[T]()
+    val initialToVisit = graph.keys.toSet
 
-    val initialProcessed = Map[T, Boolean]()
-    val intialParents = Map[T, T]()
-
-    go[T](graph, initialCosts, intialParents, initialProcessed)
+    go(graph, initialToVisit, initialVisited, initialCosts)
   }
 
-  private def go[T](
+  @tailrec
+  def go[T](
       graph: WeightedGraph[T],
-      costs: Costs[T],
-      parents: Parents[T],
-      processed: Map[T, Boolean]
-  ): Costs[T] = {
-    val maybeNode = findLowestCostNode[T](costs)
-
-    if (maybeNode.isEmpty) costs
+      toVisit: Set[T],
+      visited: Set[T],
+      costs: Costs[T]
+  ): Costs[T] =
+    if (toVisit.isEmpty) costs
     else {
-      val props = for {
-        node <- maybeNode
-        cost <- costs.get(node)
-        neighbors <- graph.get(node)
-        (costsPrim, parentsPrim) <- neighbors.keys
-          .foldLeft[Option[(Costs[T], Parents[T])]](Some((costs, parents)))(
-            (acc, n) => {
-              val maybeNewCost = neighbors.get(n).map(_ + cost)
-              val isTheCurrentCostLower = maybeNewCost
-                .flatMap(newCost => costs.get(n).map(_ > newCost))
-                .getOrElse(false)
+      val node = (toVisit diff visited) minBy (costs.get)
+      val toVisitPrim = toVisit - node
+      val visitedPrim = visited + node
+      val maybeCostsPrim = for {
+        neighbors <- graph get node
+        cost <- costs get node
+        costsPrim <- neighbors.keys
+          .foldLeft[Option[Costs[T]]](Some(costs))((acc, n) => {
+            val maybeNewCost = neighbors.get(n).map(_ + cost)
+            val isTheNewCostLower = maybeNewCost
+              .flatMap(newCost => costs.get(n).map(_ > newCost))
+              .getOrElse(false)
 
-              if (isTheCurrentCostLower)
-                for {
-                  newCost <- maybeNewCost
-                  (c, p) <- acc
-                } yield (c + (n -> newCost), p + (n -> node))
-              else acc
-            })
-        val processedPrim = processed + (node -> true)
-      } yield (costsPrim, parentsPrim, processedPrim)
+            if (isTheNewCostLower)
+              maybeNewCost.flatMap(newCost => acc.map(c => c + (n -> newCost)))
+            else acc
+          })
+      } yield costsPrim
 
-      if (props.isEmpty) costs
-      else {
-        val (c, p, pr) = props.get
-        go(graph, c, p, pr)
-      }
+      if (maybeCostsPrim.isEmpty) go(graph, toVisitPrim, visitedPrim, costs)
+      else go(graph, toVisitPrim, visitedPrim, maybeCostsPrim.get)
     }
-  }
-
-  private def findLowestCostNode[T](costs: Costs[T]): Option[T] = ???
 }
