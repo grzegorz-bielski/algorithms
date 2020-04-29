@@ -43,4 +43,22 @@ class UtilsSpec
     }
   }
 
+  "balanced parentheses" - {
+    "should return valid result" in {
+      val tests = List(
+        ("()", true),
+        ("()[]{}", true),
+        ("(]", false),
+        ("([)]", false),
+        ("{[]}", true)
+      )
+
+      tests.foreach {
+        case (input, expected) =>
+          Utils.balancedParentheses(input) shouldBe expected
+      }
+
+    }
+  }
+
 }
