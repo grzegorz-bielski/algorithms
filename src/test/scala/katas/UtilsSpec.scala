@@ -3,10 +3,13 @@ import scala.util.Random
 import katas.Utils
 import org.scalatest.freespec.AnyFreeSpec
 
+import org.scalatest._
+import matchers._
+
 class UtilsSpec
     extends AnyFreeSpec
     with TableDrivenPropertyChecks
-    with Matchers {
+    with should.Matchers {
 
   "find odd" - {
     "should return appropriate number" in {

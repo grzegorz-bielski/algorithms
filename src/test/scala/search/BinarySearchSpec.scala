@@ -1,8 +1,10 @@
 package search
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
-class BinarySearchSpec extends FlatSpec with Matchers {
+class BinarySearchSpec extends AnyFlatSpec with should.Matchers {
   "apply" should "find value at valid index" in {
     BinarySearch(
       List(2, 6, 4, 10, 34),

@@ -1,8 +1,10 @@
 package graphs
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
-class BreadthFirstSearchSpec extends FlatSpec with Matchers {
+class BreadthFirstSearchSpec extends AnyFlatSpec with should.Matchers {
   case class Node(name: String)
   val graph = Map(
     Node("me") -> List(Node("al"), Node("ba"), Node("ce")),

@@ -1,11 +1,13 @@
 package graphs
 
 import org.scalatest._
+import flatspec._
+import matchers._
 
-class DijkstraShorthestPathSpec extends FlatSpec with Matchers {
+class DijkstraShortestPathSpec extends AnyFlatSpec with should.Matchers {
   case class Node(name: String)
 
-  import DijkstraShorthestPath._
+  import DijkstraShortestPath._
 
   // a directed graph
   val graph: WeightedGraph[Node] = Map(
@@ -16,7 +18,7 @@ class DijkstraShorthestPathSpec extends FlatSpec with Matchers {
   )
 
   "apply" should "return a Map with properly calculated costs" in {
-    val costs = DijkstraShorthestPath[Node](
+    val costs = DijkstraShortestPath[Node](
       graph,
       Node("start")
     )

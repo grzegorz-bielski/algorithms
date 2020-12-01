@@ -3,7 +3,7 @@ package graphs
 import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 
-object DijkstraShorthestPath {
+object DijkstraShortestPath {
   type Value = Double
   type WeightedGraph[T] = Map[T, Map[T, Value]]
   type Costs[T] = Map[T, Value]
