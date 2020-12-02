@@ -5,9 +5,18 @@ import flatspec._
 import matchers._
 
 class SetCoverageSpec extends AnyFlatSpec with should.Matchers {
+  import ReportRepair._
 
-  "apply" should "return a valid number" in {
-    ReportRepair() shouldBe Some(840324)
+  "bruteForce" should "return a valid number" in {
+    partOneBruteForce shouldBe Some(840324)
+  }
+
+  "partOne" should "return a valid number" in {
+    parteOneCached shouldBe Some(840324)
+  }
+
+  "partTwo" should "return a valid number" in {
+    partTwoCached shouldBe Some(170098110)
   }
 
 }
