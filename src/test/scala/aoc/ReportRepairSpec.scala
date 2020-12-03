@@ -4,7 +4,7 @@ import org.scalatest._
 import flatspec._
 import matchers._
 
-class SetCoverageSpec extends AnyFlatSpec with should.Matchers {
+class ReportRepairSpec extends AnyFlatSpec with should.Matchers {
   import ReportRepair._
 
   "bruteForce" should "return a valid number" in {
