@@ -1,28 +1,19 @@
 package imageProcessing
 
 object Deblurring {
-  // import breeze.linalg._
-  // import breeze.linalg.functions.manhattanDistance
-
-  // read data (not handled)
-  //  \/
-  // input matrix
-  //        -> coef matrix
-  //           1. (1, 1, 1, 0, 0, 0, 0, 0)
-  //           2. (1, 1, 1, 0, 0, 0, 0, 0)
-  //           ...
-  //           9. (0, 1, 1, 0, 0, 0, 0, 0)
-  //        -> consts vector
-  //           (19 * 3, 14 * 4, ...) for 3 x 3 and 1 blur radius
-  //        -> lu(coef matrix, consts vector)
-  // solution vector
-  //  \/
-  // solution matrix
   type Matrix[T] = Vector[Vector[T]]
+
+  private def manhattanDistance(a: (Int, Int), b: (Int, Int)) = Math.abs(a._1 - b._1) + Math.abs(a._2 - b._2)
 
   def deblur(input: Matrix[Double], width: Int, height: Int, radius: Int): Matrix[Double] = {
     val size = width * height
-    def coords = input.keys.iterator.map { case (x, y) => DenseVector(x, y) }
+
+    val coords =
+      for {
+        x <- input.indices
+        y <- input(x).indices
+      } yield (x, y)
+
     def coef =
       for {
         a <- coords
@@ -31,41 +22,17 @@ object Deblurring {
       } yield if (dist <= radius) 1d else 0d
 
     val coefSlice = coef.sliding(size, size).toVector
-    val consts = input.keys.iterator.zipWithIndex.map {
-      case ((x, y), i) => input(x, y) * coefSlice(i).sum
+    val consts = coords.zipWithIndex.map {
+      case ((x, y), i) => input(x)(y) * coefSlice(i).sum
     }.toArray
 
-    // val constsVector = DenseVector(consts)
-    // println(DenseVector(consts))
-
-    val equationMatrix = DenseMatrix.horzcat(
-      DenseMatrix.create(size, size, coef.toArray),
-      DenseVector(consts).toDenseMatrix.t
-    )
-
-    // println(
-    //   EquationSolver.backSubstitution(EquationSolver.gaussianElimination(equationMatrix, size))
-    // )
+    val equationMatrix = coefSlice.zipWithIndex map {
+      case (row, i) => row.toVector :+ consts(i)
+    }
 
     val res = EquationSolver.backSubstitution(EquationSolver.gaussianElimination(equationMatrix, size))
 
-    res.sliding(width, height)
-
-    // println(
-    //   coefMatrix
-    // )
-
-    // println(
-    //   constsVector
-    // )
-    // val result = EquationSolver.lusolve(
-    //   coefMatrix,
-    //   constsVector
-    // )
-
-    // DenseMatrix.create(width, height, result.toArray.sliding(width, height).toArray.flatten)
-
-    res.sliding(width, height).toVector
+    res.sliding(width, height).map(_.toVector).toVector
   }
   object EquationSolver {
     import scala.util.chaining._
@@ -75,7 +42,6 @@ object Deblurring {
       val cols = A(0).length
       val n = size + 1
       val M = A.toArray.map(_.toArray)
-      // val M = A.copy.t.toArray.sliding(n, n).toArray
 
       var row = 0
       (0 until cols - 1) foreach { col =>
