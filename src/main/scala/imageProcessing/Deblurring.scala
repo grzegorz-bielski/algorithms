@@ -1,8 +1,8 @@
 package imageProcessing
 
 object Deblurring {
-  import breeze.linalg._
-  import breeze.linalg.functions.manhattanDistance
+  // import breeze.linalg._
+  // import breeze.linalg.functions.manhattanDistance
 
   // read data (not handled)
   //  \/
@@ -18,6 +18,7 @@ object Deblurring {
   // solution vector
   //  \/
   // solution matrix
+  type Matrix[T] = Vector[Vector[T]]
 
   def deblur(input: Matrix[Double], width: Int, height: Int, radius: Int): Matrix[Double] = {
     val size = width * height
@@ -29,76 +30,97 @@ object Deblurring {
         dist = manhattanDistance(a, b)
       } yield if (dist <= radius) 1d else 0d
 
-    val coefMatrix = DenseMatrix.create(size, size, coef.toArray)
-
     val coefSlice = coef.sliding(size, size).toVector
     val consts = input.keys.iterator.zipWithIndex.map {
       case ((x, y), i) => input(x, y) * coefSlice(i).sum
     }.toArray
 
-    val constsVector = DenseVector(consts)
+    // val constsVector = DenseVector(consts)
+    // println(DenseVector(consts))
 
-    val result = EquationSolver.solve(
-      coefMatrix,
-      constsVector
+    val equationMatrix = DenseMatrix.horzcat(
+      DenseMatrix.create(size, size, coef.toArray),
+      DenseVector(consts).toDenseMatrix.t
     )
 
-    DenseMatrix.create(width, height, result.toArray.sliding(width, height).toArray.flatten)
+    // println(
+    //   EquationSolver.backSubstitution(EquationSolver.gaussianElimination(equationMatrix, size))
+    // )
+
+    val res = EquationSolver.backSubstitution(EquationSolver.gaussianElimination(equationMatrix, size))
+
+    res.sliding(width, height)
+
+    // println(
+    //   coefMatrix
+    // )
+
+    // println(
+    //   constsVector
+    // )
+    // val result = EquationSolver.lusolve(
+    //   coefMatrix,
+    //   constsVector
+    // )
+
+    // DenseMatrix.create(width, height, result.toArray.sliding(width, height).toArray.flatten)
+
+    res.sliding(width, height).toVector
   }
   object EquationSolver {
     import scala.util.chaining._
 
-    /**
-      * Matrix based equation solver.
-      *
-      * It's using LU Factorization with Partial Pivoting, adopted from
-      * https://courses.physics.illinois.edu/cs357/sp2020/notes/ref-9-linsys.html
-      *
-      * Solves the `A * X = b`
-      *
-      * where:
-      *       `X` represents the variable matrix
-      * @param A represents a coefficients matrix
-      * @param b represents the constants vector, with the length of the `A` height
-      * @return a solution vector
-      *
-      *
-      */
-    def solve(A: DenseMatrix[Double], b: DenseVector[Double]) = {
-      val lu = LU(A); import lu.{L, P, U}
+    def gaussianElimination(A: Matrix[Double], size: Int) = {
+      val rows = A.length
+      val cols = A(0).length
+      val n = size + 1
+      val M = A.toArray.map(_.toArray)
+      // val M = A.copy.t.toArray.sliding(n, n).toArray
 
-      (P * b) pipe forwardSub(L) pipe backSub(U)
-    }
-
-    private def forwardSub(L: DenseMatrix[Double])(b: DenseVector[Double]): DenseVector[Double] = {
-      val n = L.rows
-      val x = DenseVector.zeros[Double](n)
-
-      (0 until n) foreach { i =>
-        var tmp = b(i)
-        (0 until i - 1) foreach { j =>
-          tmp -= L(i, j) * x(j)
+      var row = 0
+      (0 until cols - 1) foreach { col =>
+        val pivot = (row + 1 until rows).foldLeft(row) { (prevPivot, i) =>
+          if (Math.abs(M(i)(col)) > Math.abs(M(prevPivot)(col))) i else prevPivot
         }
-        x(i) = tmp / L(i, i)
+
+        if (M(pivot)(col) == 0) {
+          throw new IllegalArgumentException("The provided matrix is singular.")
+        }
+
+        if (col != pivot) {
+          val temp = M(col)
+
+          M(col) = M(pivot)
+          M(pivot) = temp
+        }
+
+        (row + 1 until rows) foreach { i =>
+          val scale = M(i)(col) / M(row)(col)
+
+          (col + 1 until cols) foreach { j =>
+            M(i)(j) -= (M(row)(j) * scale)
+          }
+
+          M(i)(col) = 0
+        }
+
+        row += 1
       }
 
-      x
+      M
     }
 
-    private def backSub(U: DenseMatrix[Double])(b: DenseVector[Double]): DenseVector[Double] = {
-      val n = U.rows
-      val x = DenseVector.zeros[Double](n)
+    def backSubstitution(A: Array[Array[Double]]) = {
+      val rows = A.length
+      val cols = A(0).length
 
-      (n - 1 until -1 by -1) foreach { i =>
-        var tmp = b(i)
-        (i + 1 until n) foreach { j =>
-          tmp -= U(i, j) * x(j)
-        }
-        x(i) = tmp / U(i, i)
+      (rows - 1 to 0 by -1).foldLeft(Array.ofDim[Double](rows)) { (S, i) =>
+        val sum = (cols - 2 until i by -1).foldLeft(0d)((s, j) => s + S(j) * A(i)(j))
+
+        S.updated(i, (A(i)(cols - 1) - sum) / A(i)(i))
       }
-
-      x
     }
+
   }
 
 }
