@@ -1,9 +1,8 @@
 package imageProcessing
+import scala.util.chaining._
 
 object Deblurring {
   type Matrix[T] = Vector[Vector[T]]
-
-  private def manhattanDistance(a: (Int, Int), b: (Int, Int)) = Math.abs(a._1 - b._1) + Math.abs(a._2 - b._2)
 
   def deblur(input: Matrix[Double], width: Int, height: Int, radius: Int): Matrix[Double] = {
     val size = width * height
@@ -14,34 +13,31 @@ object Deblurring {
         y <- input(x).indices
       } yield (x, y)
 
-    def coef =
+    val coef =
       for {
         a <- coords
         b <- coords
         dist = manhattanDistance(a, b)
       } yield if (dist <= radius) 1d else 0d
 
-    val coefSlice = coef.sliding(size, size).toVector
-    val consts = coords.zipWithIndex.map {
-      case ((x, y), i) => input(x)(y) * coefSlice(i).sum
-    }.toArray
+    val coefSlice = coef.sliding(size, size).toArray
+    val consts = coords.toArray.zipWithIndex.map { case ((x, y), i) => input(x)(y) * coefSlice(i).sum }
+    val equationMatrix = coefSlice.zipWithIndex map { case (row, i) => row.toArray :+ consts(i) }
 
-    val equationMatrix = coefSlice.zipWithIndex map {
-      case (row, i) => row.toVector :+ consts(i)
-    }
+    val result = EquationSolver.solve(equationMatrix)
 
-    val res = EquationSolver.backSubstitution(EquationSolver.gaussianElimination(equationMatrix, size))
-
-    res.sliding(width, height).map(_.toVector).toVector
+    result.sliding(width, height).toVector.map(_.toVector)
   }
-  object EquationSolver {
-    import scala.util.chaining._
 
-    def gaussianElimination(A: Matrix[Double], size: Int) = {
-      val rows = A.length
-      val cols = A(0).length
-      val n = size + 1
-      val M = A.toArray.map(_.toArray)
+  private def manhattanDistance(a: (Int, Int), b: (Int, Int)) = Math.abs(a._1 - b._1) + Math.abs(a._2 - b._2)
+
+  object EquationSolver {
+    def solve(A: Array[Array[Double]]) =
+      A pipe gaussianElimination pipe backSubstitution
+
+    private def gaussianElimination(M: Array[Array[Double]]) = {
+      val rows = M.length
+      val cols = M(0).length
 
       var row = 0
       (0 until cols - 1) foreach { col =>
@@ -76,17 +72,16 @@ object Deblurring {
       M
     }
 
-    def backSubstitution(A: Array[Array[Double]]) = {
-      val rows = A.length
-      val cols = A(0).length
+    private def backSubstitution(M: Array[Array[Double]]) = {
+      val rows = M.length
+      val cols = M(0).length
 
       (rows - 1 to 0 by -1).foldLeft(Array.ofDim[Double](rows)) { (S, i) =>
-        val sum = (cols - 2 until i by -1).foldLeft(0d)((s, j) => s + S(j) * A(i)(j))
+        val sum = (cols - 2 until i by -1).foldLeft(0d)((s, j) => s + S(j) * M(i)(j))
 
-        S.updated(i, (A(i)(cols - 1) - sum) / A(i)(i))
+        S.updated(i, (M(i)(cols - 1) - sum) / M(i)(i))
       }
     }
-
   }
 
 }
