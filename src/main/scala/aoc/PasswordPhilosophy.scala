@@ -1,6 +1,6 @@
 package aoc
 
-object PasswordPhilosophy {
+object PasswordPhilosophy:
   def countValidPasswords = traversePasswords {
     case (min, max, char, pass) =>
       val n = pass.count(_ == char)
@@ -19,9 +19,11 @@ object PasswordPhilosophy {
     io.Source
       .fromResource("passwordPhilosophyInput.txt")
       .getLines
-      .foldLeft(0)((z, line) => if (fn(parseLine(line))) z else z + 1)
+      .foldLeft(0)((z, line) => if fn(parseLine(line)) then z else z + 1)
 
-  private def parseLine(line: String) = {
+  private def parseLine(line: String) =
+    import scala.language.unsafeNulls
+
     val space = " " charAt 0
     val firstSpace = line indexOf space
     val secondSpace = line lastIndexOf space
@@ -35,6 +37,4 @@ object PasswordPhilosophy {
       .map(_.toInt)
 
     (firstNum, secondNum, char, pass)
-  }
 
-}

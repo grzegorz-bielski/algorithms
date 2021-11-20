@@ -2,19 +2,19 @@ package aoc
 
 import scala.collection.mutable.Set
 
-object ReportRepair extends App {
+object ReportRepair extends App:
   def empty = Option.empty[Int]
 
   def partOneBruteForce =
-    (for {
+    (for
       i <- readFile
       j <- readFile
-    } yield (i, j))
+    yield (i, j))
       .find({ case (a, b) => (a + b) == 2020 })
       .map(a => a._1 * a._2)
 
   // won't read more than necessary
-  def parteOneCached = {
+  def parteOneCached =
     val set = Set[Int]()
 
     readFile.foldLeft(empty) { (z, n) =>
@@ -23,9 +23,8 @@ object ReportRepair extends App {
         set.find(_ + n == 2020).map(_ * n)
       }
     }
-  }
 
-  def partTwoCached = {
+  def partTwoCached =
     val set = Set[Int]()
 
     readFile.foldLeft(empty)((z, n) =>
@@ -42,9 +41,7 @@ object ReportRepair extends App {
         )
       }
     )
-  }
 
   private def readFile =
     io.Source.fromResource("reportRepairInput.txt").getLines.map(_.toInt)
 
-}

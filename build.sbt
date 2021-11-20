@@ -8,3 +8,14 @@ lazy val root = (project in file("."))
       "org.scalatest" %% "scalatest" % "3.2.10" % Test
     )
   )
+
+scalacOptions ++= Seq(
+  "-new-syntax",
+  "-deprecation", 
+  "-encoding", "utf-8",
+  "-explain-types",
+  "-feature",
+  "-unchecked",
+  "-Xfatal-warnings",
+  "-Yexplicit-nulls"      
+)
