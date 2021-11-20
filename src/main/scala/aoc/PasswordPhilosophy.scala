@@ -1,13 +1,13 @@
 package aoc
 
 object PasswordPhilosophy {
-  def countValidPasswords() = traversePasswords {
+  def countValidPasswords = traversePasswords {
     case (min, max, char, pass) =>
       val n = pass.count(_ == char)
       n > max || n < min
   }
 
-  def countValidPasswords2() = traversePasswords {
+  def countValidPasswords2 = traversePasswords {
     case (posA, posB, char, pass) =>
       val isOnA = pass.charAt(posA - 1) == char
       val isOnB = pass.charAt(posB - 1) == char

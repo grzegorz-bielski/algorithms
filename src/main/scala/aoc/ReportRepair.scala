@@ -5,7 +5,7 @@ import scala.collection.mutable.Set
 object ReportRepair extends App {
   def empty = Option.empty[Int]
 
-  def partOneBruteForce() =
+  def partOneBruteForce =
     (for {
       i <- readFile
       j <- readFile
@@ -14,7 +14,7 @@ object ReportRepair extends App {
       .map(a => a._1 * a._2)
 
   // won't read more than necessary
-  def parteOneCached() = {
+  def parteOneCached = {
     val set = Set[Int]()
 
     readFile.foldLeft(empty) { (z, n) =>
@@ -25,7 +25,7 @@ object ReportRepair extends App {
     }
   }
 
-  def partTwoCached() = {
+  def partTwoCached = {
     val set = Set[Int]()
 
     readFile.foldLeft(empty)((z, n) =>
@@ -44,7 +44,7 @@ object ReportRepair extends App {
     )
   }
 
-  private def readFile() =
+  private def readFile =
     io.Source.fromResource("reportRepairInput.txt").getLines.map(_.toInt)
 
 }

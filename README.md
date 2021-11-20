@@ -1,3 +1,3 @@
 ### Algorithms
 
-Some implementaions of various algorithms and data structures in Scala.
+Some implementations of various algorithms and data structures in Scala.

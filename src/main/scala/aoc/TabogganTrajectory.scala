@@ -2,10 +2,10 @@ package aoc
 
 object TabogganTrajectory {
 
-  def partOne() =
+  def partOne =
     countTrees(right = 3, down = 1)(loadFile)
 
-  def partTwo() = {
+  def partTwo = {
     implicit val grid = loadFile
 
     countTrees(right = 1, down = 1) *
@@ -41,7 +41,7 @@ object TabogganTrajectory {
       .count
   }
 
-  private def loadFile() =
+  private def loadFile =
     io.Source
       .fromResource("tabogganTrajectory.txt")
       .getLines

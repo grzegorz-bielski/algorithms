@@ -39,7 +39,6 @@ object MerkleTree {
       fn: Array[Byte] => Array[Byte],
       nodes: Array[MerkleTree]
   ): Array[MerkleTree] = {
-    println(nodes.toSeq)
     nodes match {
       case ns if ns.size <= 1 => ns
       case ns =>
