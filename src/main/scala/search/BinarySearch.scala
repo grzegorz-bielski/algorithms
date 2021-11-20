@@ -3,15 +3,20 @@ package search
 import scala.annotation.tailrec
 
 object BinarySearch:
-  def apply[T: Ordering](items: Seq[T], item: T): Option[Int] =
+
+  // https://leetcode.com/problems/binary-search/
+  def apply(items: Array[Int], item: Int): Int = 
+    apply[Int](items, item).getOrElse(-1)
+
+  def apply[T: Ordering](items: Array[T], item: T): Option[Int] =
 
     @tailrec
     def go(low: Int, high: Int): Option[Int] =
       if low > high then None
       else
-        val mid = low + high
+        val mid = Math.floor((low + high) / 2).toInt
         val guess = items(mid)
-        val comp = implicitly[Ordering[T]].compare(guess, item)
+        val comp = Ordering[T].compare(guess, item)
 
         comp.sign match
           case -1 => go(mid + 1, high)
