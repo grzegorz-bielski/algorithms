@@ -1,4 +1,5 @@
 package imageProcessing
+
 import scala.util.chaining._
 
 object Deblurring:
