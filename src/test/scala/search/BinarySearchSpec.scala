@@ -1,8 +1,8 @@
 package search
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
 class BinarySearchSpec extends AnyFlatSpec with should.Matchers {
   "apply" should "find value at valid index" in {
