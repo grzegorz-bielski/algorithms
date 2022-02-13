@@ -12,14 +12,20 @@ sealed abstract class LinkedList[+T]:
 
   @targetName("prepend")
   def ::[A >: T](elem: A): LinkedList[A] = LLCons(elem, this)
-
   def get(index: Int): Option[T]
+  def length: Int
+  def reverse: LinkedList[T]
+  @targetName("concat")
+  def ++[A >: T](another: LinkedList[A]): LinkedList[A]
 
 object LinkedList:
   def empty[T]: LinkedList[T] = LLNil
 
+  def from[T](iterable: Iterable[T]) = 
+    iterable.foldRight(empty[T])(_ :: _)
+
   def apply[T](args: T*): LinkedList[T] =
-    args.foldLeft(empty[T])((acc, a) => a :: acc)
+    args.foldRight(empty[T])(_ :: _)
 
   def unapplySeq[A](list: LinkedList[A]): Option[Seq[A]] =
     list match
@@ -35,6 +41,12 @@ case object LLNil extends LinkedList[Nothing]:
   override def toString = "[]"
 
   def get(index: Int) = None
+  val length = 0
+  val reverse = this
+
+  @targetName("concat")
+  def ++[A >: Nothing](another: LinkedList[A]) = another
+
 end LLNil
 
 case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
@@ -42,6 +54,7 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
   val head = Some(_head)
 
   override def toString =
+    @tailrec
     def go(remaining: LinkedList[T], result: String): String =
       remaining match
         case LLNil                           => result
@@ -60,13 +73,36 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
 
     go(0, this)
 
-end LLCons
+  def length = 
+     // O(N)
+    @tailrec
+    def go(i: Int, acc: LinkedList[T]): Int =
+      if acc.isEmpty 
+      then i
+      else go(i + 1, acc.tail)
 
-@main def LinkedListPlayground =
-  val l = 1 :: 2 :: LLNil
-  val l2 = LinkedList(1, 2, 3)
-  val second = l2.get(1)
-  println(second)
-  val xd = l match
-    case LinkedList(a, b, c) => (a, b, c)
-    case _                   => (1, 2, 3)
+    go(0, this)
+
+  def reverse =
+    @tailrec
+    def go(acc: LinkedList[T], remaining: LinkedList[T]): LinkedList[T] =
+      remaining match 
+        case LLNil => acc 
+        case LLCons(head, tail) => go(head :: acc, tail)
+
+    go(LLNil, this)
+
+  @targetName("concat")
+  def ++[A >: T](another: LinkedList[A]) = 
+    // O(M) + O(M + N) -> O(M + N)
+    // M - length of `another`
+    // N - length of `this`
+    @tailrec
+    def go(acc: LinkedList[A], remaining: LinkedList[A]): LinkedList[A] =
+      remaining match 
+        case LLNil => acc 
+        case LLCons(head, tail) => go(head :: acc, tail)
+
+    go(this.reverse, another).reverse
+
+end LLCons
