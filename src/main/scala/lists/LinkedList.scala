@@ -9,7 +9,6 @@ sealed abstract class LinkedList[+T]:
   def head: Option[T]
   def tail: LinkedList[T]
   def isEmpty: Boolean
-
   @targetName("prepend")
   def ::[A >: T](elem: A): LinkedList[A] = LLCons(elem, this)
   def get(index: Int): Option[T]
@@ -17,6 +16,12 @@ sealed abstract class LinkedList[+T]:
   def reverse: LinkedList[T]
   @targetName("concat")
   def ++[A >: T](another: LinkedList[A]): LinkedList[A]
+  def removeAt(index: Int): LinkedList[T]
+  def map[A](fn: T => A): LinkedList[A]
+  def flatMap[A](fn: T => LinkedList[A]): LinkedList[A]
+  def filter(fn: T => Boolean): LinkedList[T]
+
+end LinkedList
 
 object LinkedList:
   def empty[T]: LinkedList[T] = LLNil
@@ -46,6 +51,11 @@ case object LLNil extends LinkedList[Nothing]:
 
   @targetName("concat")
   def ++[A >: Nothing](another: LinkedList[A]) = another
+
+  def removeAt(index: Int): LinkedList[Nothing] = LLNil
+  def map[A](fn: Nothing => A): LinkedList[A] = LLNil
+  def flatMap[A](fn: Nothing => LinkedList[A]): LinkedList[A] = LLNil
+  def filter(fn: Nothing => Boolean): LinkedList[Nothing] = LLNil
 
 end LLNil
 
@@ -104,5 +114,42 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
         case LLCons(head, tail) => go(head :: acc, tail)
 
     go(this.reverse, another).reverse
+
+  def removeAt(index: Int): LinkedList[T] = 
+    @tailrec
+    def go(i: Int, toLeft: LinkedList[T], toRight: LinkedList[T]): LinkedList[T] =
+      toRight match 
+        case LLNil => toLeft.reverse
+        case LLCons(_, tail) if i == index => toLeft.reverse ++ tail
+        case LLCons(head, tail) => go(i + 1, head :: toLeft, tail)
+
+    go(0, LLNil, this)
+
+  def flatMap[A](fn: T => LinkedList[A]): LinkedList[A] = 
+    // Z = sum of all lengths of fn(x) 
+    // O(Z^2) (!)
+    @tailrec
+    def go(applied: LinkedList[A], rest: LinkedList[T]): LinkedList[A] = 
+      rest match 
+        case LLNil => applied.reverse
+        case LLCons(head, tail) => go(fn(head).reverse ++ applied, tail)
+
+    go(LLNil, this)
+
+  def map[A](fn: T => A): LinkedList[A] =
+    flatMap(fn.andThen(LinkedList(_)))
+
+  def filter(fn: T => Boolean): LinkedList[T] = 
+    @tailrec
+    def go(acc: LinkedList[T], rest: LinkedList[T]): LinkedList[T] = 
+      rest match 
+        case LLNil => acc.reverse
+        case LLCons(head, tail) =>
+          if fn(head) then go(head :: acc, rest.tail)
+          else go(acc, rest.tail)
+
+    go(LLNil,  this)
+
+
 
 end LLCons

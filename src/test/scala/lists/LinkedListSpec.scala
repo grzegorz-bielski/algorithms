@@ -36,3 +36,20 @@ class LinkedListSpec extends AnyFlatSpec with should.Matchers:
   "concat" should "concatenate two list" in {
     (LinkedList(1, 2, 3) ++ LinkedList(4, 5)) shouldBe LinkedList(1, 2, 3, 4, 5)
   }
+  
+  "removeAt" should "remove element at specific index" in {
+    LinkedList(1, 2, 3, 4, 5).removeAt(2) shouldBe LinkedList(1, 2, 4, 5)
+    LinkedList(1).removeAt(2) shouldBe LinkedList(1)
+  }
+
+  "flatMap" should "correctly apply provided function" in {
+    LinkedList(1, 2, 3).flatMap(n => LinkedList(n, 7)) shouldBe LinkedList(1, 7, 2, 7, 3, 7)
+  }
+
+  "map" should "correctly apply provided function" in {
+    LinkedList(1, 2, 3).flatMap(n => LinkedList(n + 1)) shouldBe LinkedList(2, 3, 4)
+  }
+
+  "filter" should "correctly apply provided function" in {
+    LinkedList(1, 1, 2, 3).filter(_ == 1) shouldBe LinkedList(1, 1)
+  }
