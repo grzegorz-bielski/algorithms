@@ -4,7 +4,7 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class LinkedListSpec extends AnyFlatSpec with should.Matchers:
+class LinkedListSpec extends AnyFlatSpec, should.Matchers:
   "from" should "create list from interable" in {
     LinkedList.from(0 to 4) shouldBe LinkedList(0, 1, 2, 3, 4)
   }

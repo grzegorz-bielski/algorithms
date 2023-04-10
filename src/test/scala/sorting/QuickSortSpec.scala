@@ -4,7 +4,7 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class QuickSortSpec extends AnyFlatSpec with should.Matchers {
+class QuickSortSpec extends AnyFlatSpec, should.Matchers {
   val unsortedItems = Array(2, 6, 5, 3, 8, 7, 1, 0)
   val sortedItems = Array(0, 1, 2, 3, 5, 6, 7, 8)
 

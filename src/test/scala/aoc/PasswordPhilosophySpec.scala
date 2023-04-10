@@ -1,10 +1,10 @@
 package aoc
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class PasswordPhilosophySpec extends AnyFlatSpec with should.Matchers {
+class PasswordPhilosophySpec extends AnyFlatSpec, should.Matchers {
   import PasswordPhilosophy._
 
   "countValidPasswords" should "return a valid number" in {

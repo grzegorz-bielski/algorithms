@@ -1,11 +1,11 @@
 package aoc
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class TabogganTrajectorySpec extends AnyFlatSpec with should.Matchers {
-  import TabogganTrajectory._
+class TabogganTrajectorySpec extends AnyFlatSpec, should.Matchers {
+  import TabogganTrajectory.*
 
   "partOne" should "return a valid number" in {
     partOne shouldBe 209

@@ -1,10 +1,10 @@
 package graphs
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class DijkstraShortestPathSpec extends AnyFlatSpec with should.Matchers {
+class DijkstraShortestPathSpec extends AnyFlatSpec, should.Matchers {
   case class Node(name: String)
 
   import DijkstraShortestPath._

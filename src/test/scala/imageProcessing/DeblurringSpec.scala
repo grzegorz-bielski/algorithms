@@ -1,10 +1,10 @@
 package imageProcessing
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class DeblurringSpec extends AnyFlatSpec with should.Matchers {
+class DeblurringSpec extends AnyFlatSpec, should.Matchers {
   import Deblurring._
 
   "deblur" should "correctly deblur a gray-scale image matrix" in {

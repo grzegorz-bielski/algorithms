@@ -1,6 +1,6 @@
 package imageProcessing
 
-import scala.util.chaining._
+import scala.util.chaining.*
 
 object Deblurring:
   type Matrix[T] = Vector[Vector[T]]

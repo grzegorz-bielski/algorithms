@@ -1,10 +1,10 @@
 package aoc
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class ReportRepairSpec extends AnyFlatSpec with should.Matchers {
+class ReportRepairSpec extends AnyFlatSpec, should.Matchers {
   import ReportRepair._
 
   "bruteForce" should "return a valid number" in {

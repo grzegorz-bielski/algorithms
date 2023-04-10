@@ -1,10 +1,10 @@
 package approximation
 
-import org.scalatest._
-import flatspec._
-import matchers._
+import org.scalatest.*
+import flatspec.*
+import matchers.*
 
-class SetCoverageSpec extends AnyFlatSpec with should.Matchers {
+class SetCoverageSpec extends AnyFlatSpec, should.Matchers {
   case class Item(name: String)
   case class Place(name: String)
   val toCover = Set(

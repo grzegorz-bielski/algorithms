@@ -4,7 +4,7 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class BinarySearchSpec extends AnyFlatSpec with should.Matchers {
+class BinarySearchSpec extends AnyFlatSpec, should.Matchers {
   "apply" should "find value at valid index" in {
     BinarySearch.search(
       Array(2, 6, 4, 10, 34),
