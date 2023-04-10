@@ -7,7 +7,7 @@ import matchers.*
 class FibSpec extends AnyFlatSpec, TableDrivenPropertyChecks, should.Matchers:
   "fib" should "return correct result" in {
 
-    val testCases = Table[Int, Int](
+    val testCases = Table[Int, BigInt](
       ("n", "expected"),
       (0, 0),
       (1, 1),
@@ -19,5 +19,12 @@ class FibSpec extends AnyFlatSpec, TableDrivenPropertyChecks, should.Matchers:
       (15, 610)
     )
 
-    forAll(testCases) { Fib(Fib.Strategy.NaiveRecursive, _) shouldBe _ }
+    List(
+      Fib.NaiveRecursive,
+      Fib.NaiveRecursiveMemoized,
+      Fib.TailRec,
+      Fib.Iterative,
+      Fib.Lazy("scan"),
+      Fib.Lazy("zip")
+    ).foreach(fn => forAll(testCases)(fn(_) shouldBe _))
   }
