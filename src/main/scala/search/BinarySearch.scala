@@ -6,9 +6,9 @@ object BinarySearch:
 
   // https://leetcode.com/problems/binary-search/
   def apply(items: Array[Int], item: Int): Int = 
-    apply[Int](items, item).getOrElse(-1)
+    search[Int](items, item).getOrElse(-1)
 
-  def apply[T: Ordering](items: Array[T], item: T): Option[Int] =
+  def search[T: Ordering](items: Array[T], item: T): Option[Int] =
 
     @tailrec
     def go(low: Int, high: Int): Option[Int] =
