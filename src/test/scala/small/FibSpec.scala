@@ -25,6 +25,7 @@ class FibSpec extends AnyFlatSpec, TableDrivenPropertyChecks, should.Matchers:
       Fib.TailRec,
       Fib.Iterative,
       Fib.Lazy("scan"),
-      Fib.Lazy("zip")
+      Fib.Lazy("zip"),
+      Fib.Trampolined
     ).foreach(fn => forAll(testCases)(fn(_) shouldBe _))
   }
