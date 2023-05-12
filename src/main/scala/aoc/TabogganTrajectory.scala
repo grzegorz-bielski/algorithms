@@ -3,7 +3,7 @@ package aoc
 object TabogganTrajectory:
 
   def partOne =
-    countTrees(right = 3, down = 1)(loadFile)
+    countTrees(right = 3, down = 1)(using loadFile)
 
   def partTwo =
     implicit val grid = loadFile
@@ -14,8 +14,8 @@ object TabogganTrajectory:
       countTrees(right = 7, down = 1) *
       countTrees(right = 1, down = 2)
 
-  private def countTrees(down: Int, right: Int)(
-      implicit grid: Vector[Vector[GridSquare]]
+  private def countTrees(down: Int, right: Int)(using
+      grid: Vector[Vector[GridSquare]]
   ) =
     val secondRow =
       if down > 1 then
@@ -24,11 +24,10 @@ object TabogganTrajectory:
           .zipWithIndex
           .filter { case (_, i) => (i + 1) % down == 0 }
           .map { case (e, _) => e }
-      else
-        grid.drop(1)
+      else grid.drop(1)
 
     secondRow
-      .foldLeft(Result(0, (0, 0))) { (z, line) =>
+      .foldLeft(Result(0, (0, 0))): (z, line) =>
         val _y = z.pos._2 + right
         val y = if _y > (line.length - 1) then Math.abs(_y - line.length) else _y
 
@@ -36,7 +35,6 @@ object TabogganTrajectory:
           if line(y).isTree then z.count + 1 else z.count,
           (z.pos._1 - 1, y)
         )
-      }
       .count
 
   private def loadFile =

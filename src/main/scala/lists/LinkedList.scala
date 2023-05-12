@@ -2,8 +2,6 @@ package lists
 
 import scala.annotation.{targetName, tailrec}
 
-val kek = List()
-
 sealed abstract class LinkedList[+T]:
   def unsafeHead: T
   def head: Option[T]
@@ -21,12 +19,10 @@ sealed abstract class LinkedList[+T]:
   def flatMap[A](fn: T => LinkedList[A]): LinkedList[A]
   def filter(fn: T => Boolean): LinkedList[T]
 
-end LinkedList
-
 object LinkedList:
   def empty[T]: LinkedList[T] = LLNil
 
-  def from[T](iterable: Iterable[T]) = 
+  def from[T](iterable: Iterable[T]) =
     iterable.foldRight(empty[T])(_ :: _)
 
   def apply[T](args: T*): LinkedList[T] =
@@ -36,7 +32,6 @@ object LinkedList:
     list match
       case LLNil              => Some(Seq.empty)
       case LLCons(head, tail) => unapplySeq(list.tail).map(head +: _)
-end LinkedList
 
 case object LLNil extends LinkedList[Nothing]:
   def unsafeHead: Nothing = throw new NoSuchElementException
@@ -56,8 +51,6 @@ case object LLNil extends LinkedList[Nothing]:
   def map[A](fn: Nothing => A): LinkedList[A] = LLNil
   def flatMap[A](fn: Nothing => LinkedList[A]): LinkedList[A] = LLNil
   def filter(fn: Nothing => Boolean): LinkedList[Nothing] = LLNil
-
-end LLNil
 
 case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
   val unsafeHead = _head
@@ -83,11 +76,11 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
 
     go(0, this)
 
-  def length = 
-     // O(N)
+  def length =
+    // O(N)
     @tailrec
     def go(i: Int, acc: LinkedList[T]): Int =
-      if acc.isEmpty 
+      if acc.isEmpty
       then i
       else go(i + 1, acc.tail)
 
@@ -96,42 +89,42 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
   def reverse =
     @tailrec
     def go(acc: LinkedList[T], remaining: LinkedList[T]): LinkedList[T] =
-      remaining match 
-        case LLNil => acc 
+      remaining match
+        case LLNil              => acc
         case LLCons(head, tail) => go(head :: acc, tail)
 
     go(LLNil, this)
 
   @targetName("concat")
-  def ++[A >: T](another: LinkedList[A]) = 
+  def ++[A >: T](another: LinkedList[A]) =
     // O(M) + O(M + N) -> O(M + N)
     // M - length of `another`
     // N - length of `this`
     @tailrec
     def go(acc: LinkedList[A], remaining: LinkedList[A]): LinkedList[A] =
-      remaining match 
-        case LLNil => acc 
+      remaining match
+        case LLNil              => acc
         case LLCons(head, tail) => go(head :: acc, tail)
 
     go(this.reverse, another).reverse
 
-  def removeAt(index: Int): LinkedList[T] = 
+  def removeAt(index: Int): LinkedList[T] =
     @tailrec
     def go(i: Int, toLeft: LinkedList[T], toRight: LinkedList[T]): LinkedList[T] =
-      toRight match 
-        case LLNil => toLeft.reverse
+      toRight match
+        case LLNil                         => toLeft.reverse
         case LLCons(_, tail) if i == index => toLeft.reverse ++ tail
-        case LLCons(head, tail) => go(i + 1, head :: toLeft, tail)
+        case LLCons(head, tail)            => go(i + 1, head :: toLeft, tail)
 
     go(0, LLNil, this)
 
-  def flatMap[A](fn: T => LinkedList[A]): LinkedList[A] = 
-    // Z = sum of all lengths of fn(x) 
+  def flatMap[A](fn: T => LinkedList[A]): LinkedList[A] =
+    // Z = sum of all lengths of fn(x)
     // O(Z^2) (!)
     @tailrec
-    def go(applied: LinkedList[A], rest: LinkedList[T]): LinkedList[A] = 
-      rest match 
-        case LLNil => applied.reverse
+    def go(applied: LinkedList[A], rest: LinkedList[T]): LinkedList[A] =
+      rest match
+        case LLNil              => applied.reverse
         case LLCons(head, tail) => go(fn(head).reverse ++ applied, tail)
 
     go(LLNil, this)
@@ -139,17 +132,13 @@ case class LLCons[+T](_head: T, tail: LinkedList[T]) extends LinkedList[T]:
   def map[A](fn: T => A): LinkedList[A] =
     flatMap(fn.andThen(LinkedList(_)))
 
-  def filter(fn: T => Boolean): LinkedList[T] = 
+  def filter(fn: T => Boolean): LinkedList[T] =
     @tailrec
-    def go(acc: LinkedList[T], rest: LinkedList[T]): LinkedList[T] = 
-      rest match 
+    def go(acc: LinkedList[T], rest: LinkedList[T]): LinkedList[T] =
+      rest match
         case LLNil => acc.reverse
         case LLCons(head, tail) =>
           if fn(head) then go(head :: acc, rest.tail)
           else go(acc, rest.tail)
 
-    go(LLNil,  this)
-
-
-
-end LLCons
+    go(LLNil, this)

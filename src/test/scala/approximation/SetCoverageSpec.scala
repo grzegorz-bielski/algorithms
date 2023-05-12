@@ -4,7 +4,7 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class SetCoverageSpec extends AnyFlatSpec, should.Matchers {
+class SetCoverageSpec extends AnyFlatSpec, should.Matchers:
   case class Item(name: String)
   case class Place(name: String)
   val toCover = Set(
@@ -25,13 +25,10 @@ class SetCoverageSpec extends AnyFlatSpec, should.Matchers {
     Place("kfive") -> Set(Item("ca"), Item("az"))
   )
 
-  "apply" should "find the best `Place` to cover the set as much as possible" in {
+  "apply" should "find the best `Place` to cover the set as much as possible" in:
     val shared = Set(Place("ktwo"), Place("kthree"), Place("kfive"))
     val possibilities = (shared + Place("kone"), shared + Place("kfour"))
 
-    SetCoverage(available, toCover) should (
+    SetCoverage(available, toCover) should:
       be(possibilities._1) or be(possibilities._2)
-    )
-  }
-
-}
+    

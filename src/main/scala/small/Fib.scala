@@ -54,11 +54,10 @@ object Fib:
         // 0 - 1 (initial value) -> scan not run
 
         // fib - could be treated as a list of already computed values
-        0 #:: fib.scanLeft(BigInt(1)) { (acc, c) =>
+        0 #:: fib.scanLeft(BigInt(1)): (acc, c) =>
           println(s"$acc + $c")
           // fib(n-1) + fib(n-2)
           acc + c
-        }
 
       fib(n)
 

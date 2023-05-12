@@ -22,8 +22,10 @@ object Deblurring:
       yield if dist <= radius then 1d else 0d
 
     val coefSlice = coef.sliding(size, size).toArray
-    val consts = coords.toArray.zipWithIndex.map { case ((x, y), i) => input(x)(y) * coefSlice(i).sum }
-    val equationMatrix = coefSlice.zipWithIndex map { case (row, i) => row.toArray :+ consts(i) }
+    val consts = coords.toArray.zipWithIndex.map:
+      case ((x, y), i) => input(x)(y) * coefSlice(i).sum
+    val equationMatrix = coefSlice.zipWithIndex.map: (row, i) =>
+      row.toArray :+ consts(i)
 
     val result = EquationSolver.solve(equationMatrix)
 
@@ -45,8 +47,7 @@ object Deblurring:
           if Math.abs(M(i)(col)) > Math.abs(M(prevPivot)(col)) then i else prevPivot
         }
 
-        if M(pivot)(col) == 0 then
-          throw new IllegalArgumentException("The provided matrix is singular.")
+        if M(pivot)(col) == 0 then throw new IllegalArgumentException("The provided matrix is singular.")
 
         if col != pivot then
           val temp = M(col)
@@ -78,4 +79,3 @@ object Deblurring:
 
         S.updated(i, (M(i)(cols - 1) - sum) / M(i)(i))
       }
-

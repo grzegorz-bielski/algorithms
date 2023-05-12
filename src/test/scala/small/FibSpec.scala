@@ -5,7 +5,7 @@ import flatspec.*
 import matchers.*
 
 class FibSpec extends AnyFlatSpec, TableDrivenPropertyChecks, should.Matchers:
-  "fib" should "return correct result" in {
+  "fib" should "return correct result" in:
 
     val testCases = Table[Int, BigInt](
       ("n", "expected"),
@@ -28,4 +28,3 @@ class FibSpec extends AnyFlatSpec, TableDrivenPropertyChecks, should.Matchers:
       Fib.Lazy("zip"),
       Fib.Trampolined
     ).foreach(fn => forAll(testCases)(fn(_) shouldBe _))
-  }

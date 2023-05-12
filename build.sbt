@@ -1,4 +1,6 @@
-scalaVersion := "3.3.0-RC3"
+scalaVersion := "3.3.0-RC5"
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val root = (project in file("."))
   .settings(
@@ -17,5 +19,15 @@ scalacOptions ++= Seq(
   "-feature",
   "-unchecked",
   "-Xfatal-warnings",
-  "-Yexplicit-nulls"      
+  "-Yexplicit-nulls",
+  "-Ysafe-init",
+  "-Wvalue-discard",
+  "-Wunused:imports",
+  "-Wunused:privates",
+  // "-Wunused:synthetics", not supported
+  // "-Wunused:patvars", not supported
+  "-Wunused:locals",
+  "-Wunused:explicits",
+  "-Wunused:implicits",
+  "-Wunused:linted",
 )

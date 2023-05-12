@@ -4,7 +4,7 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class BreadthFirstSearchSpec extends AnyFlatSpec, should.Matchers {
+class BreadthFirstSearchSpec extends AnyFlatSpec, should.Matchers:
   case class Node(name: String)
   val graph = Map(
     Node("me") -> List(Node("al"), Node("ba"), Node("ce")),
@@ -17,36 +17,30 @@ class BreadthFirstSearchSpec extends AnyFlatSpec, should.Matchers {
     Node("jar") -> List()
   )
 
-  "apply" should "return closest Some(node) that satisfies given predicate" in {
+  "apply" should "return closest Some(node) that satisfies given predicate" in:
     BreadthFirstSearch[Node](
       graph,
       Node("me"),
       node => node.name.startsWith("p")
     ) should be(Some(Node("pa")))
-  }
 
-  "apply" should "not return None when there is no nodes that would satisfy the predicate" in {
+  "apply" should "not return None when there is no nodes that would satisfy the predicate" in:
     BreadthFirstSearch[Node](
       graph,
       Node("ja"),
       node => node.name.startsWith("x")
     ) should be(None)
-  }
 
-  "applyNoTailRec" should "return closest Some(node) that satisfies given predicate" in {
+  "applyNoTailRec" should "return closest Some(node) that satisfies given predicate" in:
     BreadthFirstSearch.applyNoTailRec[Node](
       graph,
       Node("me"),
       node => node.name.startsWith("p")
     ) should be(Some(Node("pa")))
-  }
 
-  "applyNoTailRec" should "not return None when there is no nodes that would satisfy the predicate" in {
+  "applyNoTailRec" should "not return None when there is no nodes that would satisfy the predicate" in:
     BreadthFirstSearch.applyNoTailRec[Node](
       graph,
       Node("je"),
       node => node.name.startsWith("x")
     ) should be(None)
-  }
-
-}

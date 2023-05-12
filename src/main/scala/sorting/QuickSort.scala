@@ -15,41 +15,37 @@ object ImmutableQuickSort:
 
 object InPlaceQuickSort:
   // based on https://algorithmist.com/wiki/Quicksort
-  def leftWallSort[T: Ordering](arr: Array[T]) = sort[T] { case (arr, low, high) =>
+  def leftWallSort[T: Ordering](arr: Array[T]) = sort[T](arr): (arr, low, high) =>
     val pivotIndex = low
     val pivot = arr(pivotIndex)
-    val leftWall = (low + 1 to high).foldLeft(low) { (leftWall, i) =>
+    val leftWall = (low + 1 to high).foldLeft(low): (leftWall, i) =>
       if arr(i) < pivot then
         val nextLeftWall = leftWall + 1
         arr.swap(i, nextLeftWall)
         nextLeftWall
       else leftWall
-    }
 
     arr.swap(pivotIndex, leftWall)
     leftWall
-  }(arr)
 
   // based on https://www.geeksforgeeks.org/quick-sort/
   // not sure if this is correct, does it even solve it recursively rather than in one iteration?
-  def highPivotSort[T: Ordering](arr: Array[T]) = sort[T] { case (arr, low, high) =>
+  def highPivotSort[T: Ordering](arr: Array[T]) = sort[T](arr): (arr, low, high) =>
     val pivot = arr(high)
-    val i = (low to high).foldLeft(low - 1) { (i, j) =>
+    val i = (low to high).foldLeft(low - 1): (i, j) =>
       if arr(j) < pivot then
         val next = i + 1 // 0 during first iteration
         arr.swap(next, j)
         next
       else i
-    }
 
     val next = i + 1
     arr.swap(next, high) // put pivot in a correct spot
     next
-  }(arr)
 
   type Partition[T] = Ordering[T] ?=> (Array[T], Int, Int) => Int
 
-  private def sort[T: Ordering](partition: Partition[T])(arr: Array[T]): Array[T] =
+  private def sort[T: Ordering](arr: Array[T])(partition: Partition[T]): Array[T] =
     val copied = arr.clone // immutable public api
 
     // this is not tailrec

@@ -4,10 +4,10 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class DeblurringSpec extends AnyFlatSpec, should.Matchers {
-  import Deblurring._
+class DeblurringSpec extends AnyFlatSpec, should.Matchers:
+  import Deblurring.*
 
-  "deblur" should "correctly deblur a gray-scale image matrix" in {
+  "deblur" should "correctly deblur a gray-scale image matrix" in:
     deblur(
       Vector(
         Vector(19d, 14d, 20d),
@@ -22,5 +22,3 @@ class DeblurringSpec extends AnyFlatSpec, should.Matchers {
       Vector(25.0, 7.0, 13.0),
       Vector(14.0, 0.0, 35.0)
     )
-  }
-}

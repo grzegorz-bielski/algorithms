@@ -16,12 +16,10 @@ object SetCoverage:
       if toCover.size == 0 then covered
       else
         val res =
-          available.foldLeft[(Option[K], Set[V])]((None, Set()))(
-            (acc, curr) => {
-              val coveredPrim = toCover `intersect` curr._2
-              if coveredPrim.size > acc._2.size then (Some(curr._1), coveredPrim)
-              else acc
-            })
+          available.foldLeft[(Option[K], Set[V])]((None, Set())): (acc, curr) =>
+            val coveredPrim = toCover `intersect` curr._2
+            if coveredPrim.size > acc._2.size then (Some(curr._1), coveredPrim)
+            else acc
 
         go(
           toCover `diff` res._2,

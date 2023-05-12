@@ -1,9 +1,7 @@
 import org.scalatest.*, prop.*
-import scala.util.Random
 import katas.Utils
 import org.scalatest.freespec.AnyFreeSpec
 
-import org.scalatest.*
 import matchers.*
 
 class UtilsSpec

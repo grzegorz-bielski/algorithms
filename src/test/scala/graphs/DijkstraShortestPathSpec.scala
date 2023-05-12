@@ -4,10 +4,10 @@ import org.scalatest.*
 import flatspec.*
 import matchers.*
 
-class DijkstraShortestPathSpec extends AnyFlatSpec, should.Matchers {
+class DijkstraShortestPathSpec extends AnyFlatSpec, should.Matchers:
   case class Node(name: String)
 
-  import DijkstraShortestPath._
+  import DijkstraShortestPath.*
 
   // a directed graph
   val graph: WeightedGraph[Node] = Map(
@@ -17,7 +17,7 @@ class DijkstraShortestPathSpec extends AnyFlatSpec, should.Matchers {
     Node("end") -> Map()
   )
 
-  "apply" should "return a Map with properly calculated costs" in {
+  "apply" should "return a Map with properly calculated costs" in:
     val costs = DijkstraShortestPath[Node](
       graph,
       Node("start")
@@ -31,5 +31,3 @@ class DijkstraShortestPathSpec extends AnyFlatSpec, should.Matchers {
         Node("end") -> 6.0
       )
     )
-  }
-}

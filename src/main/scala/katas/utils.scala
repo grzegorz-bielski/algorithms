@@ -25,15 +25,15 @@ object Utils:
       .split("")
       .nn
       .foldLeft(false)((acc, curr) =>
-        curr match 
-          case c @ ("(" | "{" | "[") => 
+        curr match
+          case c @ ("(" | "{" | "[") =>
             stack.push(c)
-            acc 
-        
-          case ")"             => onParen("(")
-          case "]"             => onParen("[")
-          case "}"             => onParen("{")
-          case _ => false
+            acc
+
+          case ")" => onParen("(")
+          case "]" => onParen("[")
+          case "}" => onParen("{")
+          case _   => false
       ) && stack
       .popAll()
       .find({
@@ -41,4 +41,3 @@ object Utils:
         case a               => false
       })
       .isEmpty
-
