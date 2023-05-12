@@ -15,4 +15,3 @@ class ReportRepairSpec extends AnyFlatSpec, should.Matchers:
 
   "partTwo" should "return a valid number" in:
     partTwoCached shouldBe Some(170098110)
-

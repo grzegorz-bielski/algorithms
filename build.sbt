@@ -22,12 +22,12 @@ scalacOptions ++= Seq(
   "-Yexplicit-nulls",
   "-Ysafe-init",
   "-Wvalue-discard",
-  "-Wunused:imports",
-  "-Wunused:privates",
   // "-Wunused:synthetics", not supported
   // "-Wunused:patvars", not supported
-  "-Wunused:locals",
-  "-Wunused:explicits",
-  "-Wunused:implicits",
-  "-Wunused:linted",
+  // "-Wunused:imports",
+  // "-Wunused:privates",
+  // "-Wunused:locals",
+  // "-Wunused:explicits",
+  // "-Wunused:implicits",
+  // "-Wunused:linted",
 )
