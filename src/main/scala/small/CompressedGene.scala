@@ -68,8 +68,6 @@ object CompressedGene:
         // T: 11
         val lastBits = first << 1 | second
 
-        // println(lastBits)
-
         acc :+ (lastBits match
           // 00
           case 0 => Nucleotide.A
@@ -83,9 +81,3 @@ object CompressedGene:
       case (acc, _) => acc
 
 extension (underlying: Boolean) def toInt: Int = if underlying then 1 else 0
-
-extension (underlying: String)
-  def base(b: Int): Int = Integer.parseInt(underlying, b)
-  def b: Int = base(2)
-  def o: Int = base(8)
-  def x: Int = base(16)
