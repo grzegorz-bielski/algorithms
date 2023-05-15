@@ -5,6 +5,8 @@ import scala.util.Random
 
 // encrypted = og ^ dummy
 // og = encrypted ^ dummy
+
+// symmetric-key encryption 
 object OneTimePad:
   def encrypt(data: String): KeyPair =
     val og = Key.fromString(data)

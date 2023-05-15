@@ -43,11 +43,10 @@ object MerkleTree:
         unfold(
           fn,
           ns.grouped(2)
-            .map {
+            .map:
               case Array(a, b) =>
                 new MerkleTree(fn(a.hash ++ b.hash), Some(a), Some(b))
               case Array(a) => new MerkleTree(fn(a.hash), Some(a), None)
-            }
             .toArray
         )
 

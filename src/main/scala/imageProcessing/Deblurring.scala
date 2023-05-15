@@ -42,10 +42,9 @@ object Deblurring:
       val cols = M(0).length
 
       var row = 0
-      (0 until cols - 1) foreach { col =>
-        val pivot = (row + 1 until rows).foldLeft(row) { (prevPivot, i) =>
+      (0 until cols - 1).foreach: col =>
+        val pivot = (row + 1 until rows).foldLeft(row): (prevPivot, i) =>
           if Math.abs(M(i)(col)) > Math.abs(M(prevPivot)(col)) then i else prevPivot
-        }
 
         if M(pivot)(col) == 0 then throw new IllegalArgumentException("The provided matrix is singular.")
 
@@ -55,18 +54,15 @@ object Deblurring:
           M(col) = M(pivot)
           M(pivot) = temp
 
-        (row + 1 until rows) foreach { i =>
+        (row + 1 until rows).foreach: i =>
           val scale = M(i)(col) / M(row)(col)
 
-          (col + 1 until cols) foreach { j =>
+          (col + 1 until cols).foreach: j =>
             M(i)(j) -= (M(row)(j) * scale)
-          }
 
           M(i)(col) = 0
-        }
 
         row += 1
-      }
 
       M
 
@@ -74,8 +70,7 @@ object Deblurring:
       val rows = M.length
       val cols = M(0).length
 
-      (rows - 1 to 0 by -1).foldLeft(Array.ofDim[Double](rows)) { (S, i) =>
+      (rows - 1 to 0 by -1).foldLeft(Array.ofDim[Double](rows)): (S, i) =>
         val sum = (cols - 2 until i by -1).foldLeft(0d)((s, j) => s + S(j) * M(i)(j))
 
         S.updated(i, (M(i)(cols - 1) - sum) / M(i)(i))
-      }
