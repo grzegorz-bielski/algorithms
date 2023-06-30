@@ -1,4 +1,4 @@
-scalaVersion := "3.3.0-RC5"
+scalaVersion := "3.3.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -22,12 +22,5 @@ scalacOptions ++= Seq(
   "-Yexplicit-nulls",
   "-Ysafe-init",
   "-Wvalue-discard",
-  // "-Wunused:synthetics", not supported
-  // "-Wunused:patvars", not supported
-  // "-Wunused:imports",
-  // "-Wunused:privates",
-  // "-Wunused:locals",
-  // "-Wunused:explicits",
-  // "-Wunused:implicits",
-  // "-Wunused:linted",
+  "-Wunused:all",
 )
