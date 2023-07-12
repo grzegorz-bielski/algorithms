@@ -1,10 +1,8 @@
 package small
 
-import org.scalatest.*, prop.*
+import org.scalatest.*
 import flatspec.*
 import matchers.*
-
-import scala.collection.immutable.BitSet
 
 class OneTimePadSpec extends AnyFlatSpec, should.Matchers:
   "encrypt/decrypt" should "roundtrip correctly" in:

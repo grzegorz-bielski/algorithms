@@ -3,7 +3,7 @@ package concurrency.philisophers
 import java.util.concurrent.Semaphore
 import scala.util.Random
 
-// 5 philisophers sit at a round table. Each has a plate of spaghetti. A fork is placed between each pair of adjacent
+// 5 philosophers sit at a round table. Each has a plate of spaghetti. A fork is placed between each pair of adjacent
 // philosophers. A philosopher needs both forks to eat. Each philosopher can pick up the fork on their left or the fork
 // on their right, but cannot start eating until they have both forks. Forks need to be pick up one at the time. When a philosopher finishes eating, they put down
 // both forks and start thinking. The goal is to design a concurrent program that allows the philosophers to eat without

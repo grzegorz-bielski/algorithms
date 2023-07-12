@@ -1,10 +1,8 @@
 package small
 
-import org.scalatest.*, prop.*
+import org.scalatest.*
 import flatspec.*
 import matchers.*
-
-import scala.collection.immutable.BitSet
 
 class CompressedGeneSpec extends AnyFlatSpec, should.Matchers:
   "compress/decompress" should "roundtrip correctly" in:
