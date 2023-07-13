@@ -51,9 +51,9 @@ final class MutableQueue[T] extends Queue[T]:
       head.map: h =>
         length = length - 1
         head = h.next
-        // free, not necessary
-        h.next = None
-        if length == 0 then tail = None
+        // free, handled by GC
+        // h.next = None // removing refs from returned head
+        // if length == 0 then tail = None
 
         h.value
       ,

@@ -2,9 +2,8 @@ package algos.structures
 
 import scala.annotation.{targetName, tailrec}
 
-/**
- * Ordinary single-ended linked list. 
- * */
+/** Ordinary single-ended, immutable linked list.
+  */
 sealed abstract class LinkedList[+T]:
   def unsafeHead: T
   def head: Option[T]
