@@ -1,4 +1,4 @@
-package algos.lists
+package algos.structures
 
 import org.scalatest.*
 import flatspec.*
