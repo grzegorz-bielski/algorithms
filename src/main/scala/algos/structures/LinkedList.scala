@@ -2,7 +2,9 @@ package algos.structures
 
 import scala.annotation.{targetName, tailrec}
 
-/** Ordinary single-ended, immutable linked list.
+/** Single-ended, immutable, persistent linked list.
+ * 
+ * https://softwaremill.com/persistent-data-structures-in-functional-programming/
   */
 sealed abstract class LinkedList[+T]:
   def unsafeHead: T
