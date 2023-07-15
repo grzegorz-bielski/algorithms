@@ -11,6 +11,6 @@ extension [T](a: Array[T])
     swap(i, j)
     ()
 
-  def middle =
+  def middle: T =
     val mid = Math.floor(a.length / 2).toInt
     a(mid)

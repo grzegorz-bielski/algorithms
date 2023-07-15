@@ -15,11 +15,11 @@ final class RingBuffer[T: ClassTag](size: Int):
   @volatile private var readIndex = 0
   @volatile private var writeIndex = 0
 
-  def availableSpaceForReading: Int = writeIndex - readIndex
-  def availableSpaceForWriting: Int = size - availableSpaceForReading
+  private def readingSpace: Int = writeIndex - readIndex
+  private def writingSpace: Int = size - readingSpace
 
-  def isFull: Boolean = availableSpaceForWriting == 0
-  def isEmpty: Boolean = availableSpaceForReading == 0
+  def isFull: Boolean = writingSpace == 0
+  def isEmpty: Boolean = readingSpace == 0
 
   def push(a: T): Boolean =
     if isFull then false

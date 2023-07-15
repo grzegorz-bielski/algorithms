@@ -49,4 +49,4 @@ object BreadthFirstSearch:
     from(graph, center).flatMap(go(Map()))
 
   private def from[T](graph: Graph[T], t: T) =
-    graph.get(t).map(_.to(collection.immutable.Queue))
+    graph.get(t).map(_.to(Queue))
