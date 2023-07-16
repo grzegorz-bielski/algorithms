@@ -6,6 +6,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "algorithms",
     libraryDependencies ++= Seq(
+      "com.lihaoyi" %% "pprint" % "0.7.0",
       "org.scalactic" %% "scalactic" % "3.2.15",
       "org.scalatest" %% "scalatest" % "3.2.15" % Test
     )
@@ -23,4 +24,5 @@ scalacOptions ++= Seq(
   "-Ysafe-init",
   "-Wvalue-discard",
   "-Wunused:all",
+  // "-language:strictEquality"
 )

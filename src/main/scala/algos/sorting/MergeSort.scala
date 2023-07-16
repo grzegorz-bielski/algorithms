@@ -18,7 +18,7 @@ object MergeSort:
   def sort[T: Ordering](xs: List[T]): List[T] =
     def go[T: Ordering](xs: List[T]): TailRec[List[T]] = xs match
       case Nil      => done(xs)
-      case _ +: Nil => done(xs)
+      case _ :: Nil => done(xs)
       case _ =>
         val (left, right) = xs.splitAt(xs.length / 2)
         for
@@ -34,5 +34,5 @@ object MergeSort:
     case (_, Nil) => done(left)
     case (l :: leftTail, r :: rightTail) =>
       if l < r
-      then tailcall(merge(leftTail, right)).map(l +: _) // move to left
-      else tailcall(merge(left, rightTail)).map(r +: _) // move to right
+      then tailcall(merge(leftTail, right)).map(l :: _) // move to left
+      else tailcall(merge(left, rightTail)).map(r :: _) // move to right
