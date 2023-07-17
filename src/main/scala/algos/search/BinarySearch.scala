@@ -8,6 +8,7 @@ object BinarySearch:
   def apply(items: Array[Int], item: Int): Int = 
     search[Int](items, item).getOrElse(-1)
 
+  // assumes sorted array
   def search[T: Ordering](items: Array[T], item: T): Option[Int] =
 
     @tailrec

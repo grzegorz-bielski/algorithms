@@ -5,8 +5,6 @@ import scala.collection.mutable
 
 import BinaryTree.*
 
-// import scala.collection.mutable.Growable
-
 trait BinaryTree[+T]:
   def value: T
   def left: Option[BinaryTree[T]]
@@ -51,7 +49,21 @@ trait BinaryTree[+T]:
           go
     go
 
-  // Depth-first traversal
+  def compare[A >: T](other: BinaryTree[A]): Boolean =
+    def go(a: Option[BinaryTree[A]], b: Option[BinaryTree[A]]): TailRec[Boolean] =
+      (a, b) match
+        case (None, None)                             => done(true)
+        case (Some(_), None) | (None, Some(_))        => done(false)
+        case (Some(x), Some(y)) if x.value != y.value => done(false)
+        case (Some(x), Some(y)) =>
+          for
+            left <- tailcall(go(x.left, y.left))
+            right <- tailcall(go(x.right, y.right))
+          yield left && right
+
+    go(Some(this), Some(other)).result
+
+  // Depth-first traversal, preserves the shape of the tree
   def walk(traversal: Traversal): List[T] =
     val visited = collection.mutable.ArrayBuffer.empty[T]
 
