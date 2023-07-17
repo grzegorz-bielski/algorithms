@@ -6,11 +6,13 @@ import java.util.Base64
   * - leaf node contains a hash of the data block
   * - non-leaf node contains a hash of its child nodes hashes
   */
-class MerkleTree(
+final class MerkleTree(
     val hash: Array[Byte],
     val left: Option[MerkleTree] = None,
     val right: Option[MerkleTree] = None
-) extends Serializable:
+) extends BinaryTree[Array[Byte]], Serializable:
+
+  def value: Array[Byte] = hash
 
   override def toString =
     s"MT(hash = ${printHash(hash)})"

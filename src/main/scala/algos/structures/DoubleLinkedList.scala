@@ -86,12 +86,6 @@ final class DoubleLinkedList[T]:
   private def removeNode(node: Node): T =
     length = length - 1
 
-    println(length)
-    println(node)
-
-    println("head" -> head)
-    println("tail" -> tail)
-
     if length == 0 then
       head = None
       tail = None

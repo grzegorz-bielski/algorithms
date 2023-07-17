@@ -2,5 +2,8 @@
   "files.watcherExclude": {
     "**/target": true
   },
-  "cSpell.words": ["Paren"]
+  "cSpell.words": [
+    "Merkle",
+    "Paren"
+  ]
 }
