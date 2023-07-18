@@ -41,7 +41,7 @@ final class MutableQueue[T] extends Queue[T]:
       tail.foreach(_.next = n)
       tail = n
 
-    length = length + 1
+    length += 1
 
     this
 
@@ -49,7 +49,7 @@ final class MutableQueue[T] extends Queue[T]:
   def pop: (Option[T], Queue[T]) =
     (
       head.map: h =>
-        length = length - 1
+        length -= 1
         head = h.next
         // free, handled by GC
         // h.next = None // removing refs from returned head

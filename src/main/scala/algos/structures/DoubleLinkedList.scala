@@ -28,7 +28,7 @@ final class DoubleLinkedList[T]:
       head.foreach(_.prev = n)
       head = n
 
-    length = length + 1
+    length += 1
 
   // O(n)
   def append(value: T): Unit =
@@ -42,17 +42,17 @@ final class DoubleLinkedList[T]:
       tail.foreach(_.next = n)
       tail = n
 
-    length = length + 1
+    length += 1
 
   def insertAt(value: T, index: Int): Boolean =
     index match
       case i if i > length => false
       case i if i == length =>
-        length = length + 1
+        length += 1
         append(value)
         true
       case 0 =>
-        length = length + 1
+        length += 1
         prepend(value)
         true
       case i =>
@@ -61,7 +61,7 @@ final class DoubleLinkedList[T]:
           curr.prev.foreach(_.next = n)
           curr.prev = n
 
-          length = length + 1
+          length += 1
 
         true
 
@@ -84,7 +84,7 @@ final class DoubleLinkedList[T]:
       .next()
 
   private def removeNode(node: Node): T =
-    length = length - 1
+    length -= 1
 
     if length == 0 then
       head = None

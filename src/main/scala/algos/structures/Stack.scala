@@ -24,15 +24,14 @@ final class MutableStack[T] extends Stack[T]:
       n.foreach(_.prev = head)
       head = n
 
-    length = length + 1
-
+    length += 1
     this
 
   // O(c)
   def pop: (Option[T], Stack[T]) =
     (
       head.map: h =>
-        length = length - 1
+        length -= 1
         head = h.prev
         // free handled by GC
         // h.prev = None // removing refs from returned head
