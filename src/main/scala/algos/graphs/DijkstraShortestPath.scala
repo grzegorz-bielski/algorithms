@@ -4,10 +4,13 @@ import scala.annotation.tailrec
 
 object DijkstraShortestPath:
   type Value = Double
+
+  // DAG as HashMap of HashMaps using the adjacency list approach
   type WeightedGraph[T] = Map[T, Map[T, Value]]
   type Costs[T] = Map[T, Value]
 
   def apply[T](graph: WeightedGraph[T], source: T) =
+    // would be faster to use a priority queue / minheap
     val initialCosts =
       graph.keys.foldLeft(Map[T, Value]()): (acc, t) =>
         acc + (if t == source then (t -> 0) else (t -> Double.PositiveInfinity))
@@ -39,9 +42,8 @@ object DijkstraShortestPath:
               .flatMap(newCost => costs.get(n).map(_ > newCost))
               .getOrElse(false)
 
-            if isTheNewCostLower then maybeNewCost.flatMap(newCost => acc.map(c => c + (n -> newCost)))
+            if isTheNewCostLower then maybeNewCost.flatMap(newCost => acc.map(_ + (n -> newCost)))
             else acc
       yield costsPrim
 
-      if maybeCostsPrim.isEmpty then go(graph, toVisitPrim, visitedPrim, costs)
-      else go(graph, toVisitPrim, visitedPrim, maybeCostsPrim.get)
+      go(graph, toVisitPrim, visitedPrim, maybeCostsPrim.getOrElse(costs))
