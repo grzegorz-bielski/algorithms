@@ -36,6 +36,8 @@ trait BinaryTree[+T]:
       def isEmpty = s.isEmpty
       def addAll(xs: Nodes) = s ++= xs
 
+  // TODO: A*
+
   private def search(xs: Structure)(p: T => Boolean): Option[T] =
     @scala.annotation.tailrec
     def go: Option[T] =
