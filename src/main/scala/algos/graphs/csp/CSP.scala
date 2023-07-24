@@ -60,8 +60,9 @@ final class CSP[V, D](
 
 object CSP:
   def create[V, D](domains: Map[V, Vector[D]], cx: Constraint[V, D]*) =
-    val variables = domains.keys
-    if cx.forall(c => variables.forall(c.variables.contains)) then
+    val variables = domains.keys.toList
+
+    if !cx.forall(_.variables.forall(variables.contains)) then
       Left:
         "Variable in constraint is not present in CSP"
     else
