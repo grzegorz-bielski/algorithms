@@ -37,5 +37,4 @@ def eightQueens =
               .getOrElse(true)
 
   CSP
-    .create(domains, QueensConstraint)
-    .flatMap(_.search.toRight("No solution found"))
+    .search(domains, QueensConstraint)

@@ -22,14 +22,10 @@ def wordSearch =
   val constraint = WordSearchConstraint(words)
 
   CSP
-    .create(domains, constraint)
-    .flatMap(_.search.toRight("No solution found"))
+    .search(domains, constraint)
     .map: locations =>
       locations -> locations.foldLeft(WordGrid.create(rows, columns, seed = 0L)):
         case (grid, (word, loc)) => grid.mark(word, loc)
-
-type Row = Int
-type Col = Int
 
 type Word = String
 type PossibleLocations = Vector[GridLocation]

@@ -59,6 +59,9 @@ final class CSP[V, D](
     go(Map.empty).result
 
 object CSP:
+  def search[V, D](domains: Map[V, Vector[D]], cx: Constraint[V, D]*) =
+    create(domains, cx: _*).flatMap(_.search.toRight("No solution found"))
+
   def create[V, D](domains: Map[V, Vector[D]], cx: Constraint[V, D]*) =
     val variables = domains.keys.toList
 

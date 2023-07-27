@@ -45,5 +45,4 @@ def australianMapColoring =
     ).map(AusConstraint.apply.tupled)
 
   CSP
-    .create(domains, constraints*)
-    .flatMap(_.search.toRight("No solution found"))
+    .search(domains, constraints*)
