@@ -1,9 +1,10 @@
 package algos.graphs
 
+import algos.graphs.search.*
+import algos.*
+
 type VertexIndex = Int
 
-/** A connection between two vertices in a graph.
-  */
 trait Edge extends Product:
   def from: VertexIndex
   def to: VertexIndex
@@ -74,6 +75,11 @@ final case class UnweightedGraph[V](vertices: Vector[V], edges: Vector[Vector[Un
           .updated(edge.from, edges(edge.from) :+ edge)
           .updated(edge.to, edges(edge.to) :+ edge.reversed)
     )
+
+  given Searchable[Id, V] with
+    extension (fa: Id[V])
+      def value: V = fa
+      def successors: Vector[Id[V]] = neighborsOf(value)
 
 object UnweightedGraph:
   def create[V](vertices: Vector[V], edges: Vector[(V, V)]): Option[UnweightedGraph[V]] =

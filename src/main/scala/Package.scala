@@ -2,6 +2,8 @@ package algos
 
 import scala.collection.mutable.ArrayBuffer
 
+type Id[A] = A
+
 extension [T](a: Array[T])
   def swap(i: Int, j: Int): Array[T] =
     val temp = a(i)

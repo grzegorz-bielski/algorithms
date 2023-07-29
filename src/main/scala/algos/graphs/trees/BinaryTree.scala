@@ -20,8 +20,8 @@ trait BinaryTree[T]:
       def successors: Vector[BinaryTree[T]] =
         (fa.left ++ fa.right).toVector
 
-  val bfs: Search[T] = GraphSearch.bfs(this, _)
-  val dfs: Search[T] = GraphSearch.dfs(this, _)
+  val bfs: Search[T] = GraphSearch.bfs(this, _).map(_.current.value)
+  val dfs: Search[T] = GraphSearch.dfs(this, _).map(_.current.value)
 
   def compare(other: BinaryTree[T]): Boolean =
     def go(a: Option[BinaryTree[T]], b: Option[BinaryTree[T]]): TailRec[Boolean] =
