@@ -4,7 +4,7 @@ import math.Ordering.Implicits.given
 
 /** BinarySearchTree represents a tree in which the property of `left <= value < right` always holds true
   */
-final case class BinarySearchTree[+T: Ordering](
+final case class BinarySearchTree[T: Ordering](
     value: T,
     left: Option[BinarySearchTree[T]],
     right: Option[BinarySearchTree[T]]

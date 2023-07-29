@@ -1,58 +1,30 @@
 package algos.graphs.trees
 
+import algos.graphs.search.*
+
 import scala.util.control.TailCalls.*
 import scala.collection.mutable
 
 import BinaryTree.*
 
-trait BinaryTree[+T]:
+trait BinaryTree[T]:
   def value: T
   def left: Option[BinaryTree[T]]
   def right: Option[BinaryTree[T]]
 
-  private val root = this
-
-  private type Nodes = IterableOnce[BinaryTree[T]]
-  private trait Structure:
-    // pop / dequeue
-    def take: BinaryTree[T]
-    // push / append all
-    def addAll(xs: Nodes): Unit
-    def isEmpty: Boolean
-
   type Search[A] = (A => Boolean) => Option[A]
 
-  val bfs: Search[T] = search:
-    new:
-      val q = mutable.Queue(root)
-      def take = q.dequeue()
-      def isEmpty = q.isEmpty
-      def addAll(xs: Nodes) = q ++= xs
+  given Searchable[BinaryTree, T] with
+    extension (fa: BinaryTree[T])
+      def value: T = fa.value
+      def successors: Vector[BinaryTree[T]] =
+        (fa.left ++ fa.right).toVector
 
-  val dfs: Search[T] = search:
-    new:
-      val s = mutable.Stack(root)
-      def take = s.pop()
-      def isEmpty = s.isEmpty
-      def addAll(xs: Nodes) = s ++= xs
+  val bfs: Search[T] = GraphSearch.bfs(this, _)
+  val dfs: Search[T] = GraphSearch.dfs(this, _)
 
-  // TODO: A*
-
-  private def search(xs: Structure)(p: T => Boolean): Option[T] =
-    @scala.annotation.tailrec
-    def go: Option[T] =
-      if xs.isEmpty then None
-      else
-        val n = xs.take
-        if p(n.value)
-        then Some(n.value)
-        else
-          xs.addAll(n.left ++ n.right)
-          go
-    go
-
-  def compare[A >: T](other: BinaryTree[A]): Boolean =
-    def go(a: Option[BinaryTree[A]], b: Option[BinaryTree[A]]): TailRec[Boolean] =
+  def compare(other: BinaryTree[T]): Boolean =
+    def go(a: Option[BinaryTree[T]], b: Option[BinaryTree[T]]): TailRec[Boolean] =
       (a, b) match
         case (None, None)                             => done(true)
         case (Some(_), None) | (None, Some(_))        => done(false)
