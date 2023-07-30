@@ -121,3 +121,13 @@ class GraphSpec extends AnyFunSuite, should.Matchers:
 
     path shouldBe Some(List("Boston", "Detroit", "Washington", "Miami"))
 
+  test("can find a Minimum Spanning Tree in a weighted Graph"):
+    val graph = WeightedGraph.create(vertices, weightedEdges).getOrElse(fail("Graph creation failed"))
+
+    // shortest collection of edges / tracks that connect all off the vertices / cities in the graph / map
+    val mst = graph.mst(0)
+
+    // println(mst.showOn(graph))
+
+    mst.size shouldBe 14
+    mst.totalWeight shouldBe 5372

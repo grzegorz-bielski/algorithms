@@ -29,3 +29,6 @@ class BinaryTreeSpec extends AnyFunSuite, should.Matchers:
 
   test("finds node by predicate using BFS algorithm"):
     tree.bfs(_ == 18) shouldBe Some(18)
+
+  test("finds node by predicate using A* algorithm"):
+    tree.`A*`(_ == 18) shouldBe Some(18)

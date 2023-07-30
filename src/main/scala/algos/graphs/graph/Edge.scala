@@ -21,6 +21,6 @@ final case class UnweightedEdge(from: VertexIndex, to: VertexIndex) extends Edge
 final case class WeightedEdge(from: VertexIndex, to: VertexIndex, weight: Double) extends Edge:
   def reversed: WeightedEdge = WeightedEdge(to, from, weight)
 
-  override def toString: String = s"$from -$weight-> $to"
+  override def toString: String = s"$from --$weight--> $to"
 object WeightedEdge:
   given Ordering[WeightedEdge] = Ordering.by(_.weight)

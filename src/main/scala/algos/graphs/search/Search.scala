@@ -34,13 +34,11 @@ object GraphSearch:
       new SearchStructure[F, T]:
         // minHeap
         val q = mutable.PriorityQueue(Node(root, None))(using Ordering[Node[F[T]]].reverse)
-
         def take = q.dequeue()
         def isEmpty = q.isEmpty
         def addSuccessors(n: Node[F[T]], newCost: Double) =
-          val next = n.current.successors.map(Node(_, Some(n), Some(newCost), Some(n.current.heuristic)))
-
-          q ++= next
+          q ++= n.current.successors.map:
+            Node(_, Some(n), Some(newCost), Some(n.current.heuristic))
 
   private def search[F[_], T](p: T => Boolean)(s: SearchStructure[F, T])(using Searchable[F, T]): Option[Node[F[T]]] =
     val visited = mutable.Set[T]()

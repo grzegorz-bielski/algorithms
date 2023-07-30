@@ -14,14 +14,17 @@ trait BinaryTree[T]:
 
   type Search[A] = (A => Boolean) => Option[A]
 
-  given Searchable[BinaryTree, T] with
+  given WeightedSearchable[BinaryTree, T] with
     extension (fa: BinaryTree[T])
       def value: T = fa.value
       def successors: Vector[BinaryTree[T]] =
         (fa.left ++ fa.right).toVector
+      def cost(prev: Double): Double = prev + 1
+      def heuristic: Double = 0
 
   val bfs: Search[T] = GraphSearch.bfs(this, _).map(_.current.value)
   val dfs: Search[T] = GraphSearch.dfs(this, _).map(_.current.value)
+  val `A*`: Search[T] = GraphSearch.`A*`(this, _).map(_.current.value)
 
   def compare(other: BinaryTree[T]): Boolean =
     def go(a: Option[BinaryTree[T]], b: Option[BinaryTree[T]]): TailRec[Boolean] =
