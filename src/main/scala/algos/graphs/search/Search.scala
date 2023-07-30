@@ -7,15 +7,19 @@ trait Searchable[F[_], T]:
     def value: T
     def successors: Vector[F[T]]
 
-object GraphSearch:
-  case class Node[T](current: T, parent: Option[Node[T]]):
-    def toPath: List[T] =
-      def go(n: Node[T], acc: List[T]): List[T] =
-        n.parent match
-          case None    => n.current :: acc
-          case Some(p) => go(p, n.current :: acc)
+trait WeightedSearchable[F[_], T] extends Searchable[F, T]:
+  extension (fa: F[T])
+    def cost(prev: Double): Double
+    def heuristic: Double
 
-      go(this, Nil)
+object GraphSearch:
+  def dfs[F[_], T](root: F[T], p: T => Boolean)(using Searchable[F, T]) = search(p):
+    new SearchStructure[F, T]:
+      val s = mutable.Stack(Node(root, None))
+      def take = s.pop()
+      def isEmpty = s.isEmpty
+      def addSuccessors(n: Node[F[T]]) =
+        s ++= n.current.successors.map(Node(_, Some(n)))
 
   def bfs[F[_], T](root: F[T], p: T => Boolean)(using Searchable[F, T]) = search(p):
     new SearchStructure[F, T]:
@@ -25,17 +29,20 @@ object GraphSearch:
       def addSuccessors(n: Node[F[T]]) =
         q ++= n.current.successors.map(Node(_, Some(n)))
 
-  def dfs[F[_], T](root: F[T], p: T => Boolean)(using Searchable[F, T]) = search(p):
-    new SearchStructure[F, T]:
-      val s = mutable.Stack(Node(root, None))
-      def take = s.pop()
-      def isEmpty = s.isEmpty
-      def addSuccessors(n: Node[F[T]]) =
-        s ++= n.current.successors.map(Node(_, Some(n)))
-
-  // TODO: A*
+  // def `A*`[F[_], T](root: F[T], p: T => Boolean)(using WeightedSearchable[F, T]) =
+  //   weightedSearch(p):
+  //     new SearchStructure[F, T]:
+  //       val q = mutable.PriorityQueue(Node(root, None))
+  //       def take = q.dequeue()
+  //       def isEmpty = q.isEmpty
+  //       def addSuccessors(n: Node[F[T]]) =
+  //         // TODO: duplicated code
+  //         val newCost = n.current.cost(n.parent.flatMap(_.cost).getOrElse(0.0))
+  //         q ++= n.current.successors.map(Node(_, Some(n), Some(newCost), Some(n.current.heuristic)))
 
   private def search[F[_], T](p: T => Boolean)(s: SearchStructure[F, T])(using Searchable[F, T]): Option[Node[F[T]]] =
+    val visited = mutable.Set[T]()
+
     @scala.annotation.tailrec
     def go: Option[Node[F[T]]] =
       if s.isEmpty then None
@@ -44,12 +51,52 @@ object GraphSearch:
         val value = node.current.value
 
         if p(value) then Some(node)
-        else if s.visited.contains(value) then go
+        else if visited.contains(value) then go
         else
-          s.visited += value
+          visited += value
           s.addSuccessors(node)
           go
     go
+
+  // private def weightedSearch[F[_], T](p: T => Boolean)(s: SearchStructure[F, T])(using
+  //     WeightedSearchable[F, T]
+  // ): Option[Node[F[T]]] =
+  //   val visited = mutable.Map[T, Double]()
+
+  //   @scala.annotation.tailrec
+  //   def go: Option[Node[F[T]]] =
+  //     if s.isEmpty then None
+  //     else
+  //       val node = s.take
+  //       val value = node.current.value
+  //       val newCost = node.current.cost(node.parent.flatMap(_.cost).getOrElse(0.0))
+
+  //       if p(value) then Some(node)
+  //       else if visited.isDefinedAt(value) && visited(value) < newCost then go
+  //       else
+  //         visited += (value -> newCost)
+  //         s.addSuccessors(node)
+  //         go
+  //   go
+
+  /** Inline immutable linked-list node for storing results of the search
+    */
+  final case class Node[T](
+      current: T,
+      parent: Option[Node[T]],
+      cost: Option[Double] = None,
+      heuristic: Option[Double] = None
+  ):
+    def toPath: List[T] =
+      def go(n: Node[T], acc: List[T]): List[T] =
+        n.parent match
+          case None    => n.current :: acc
+          case Some(p) => go(p, n.current :: acc)
+
+      go(this, Nil)
+  object Node:
+    given [T]: Ordering[Node[T]] = Ordering.by: n =>
+      n.cost.getOrElse(0.0) + n.heuristic.getOrElse(0.0)
 
   private trait SearchStructure[F[_], T]:
     // pop / dequeue
@@ -57,5 +104,3 @@ object GraphSearch:
     // push / append all successors
     def addSuccessors(n: Node[F[T]]): Unit
     def isEmpty: Boolean
-
-    val visited = mutable.Set[T]()
