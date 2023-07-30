@@ -110,3 +110,14 @@ class GraphSpec extends AnyFunSuite, should.Matchers:
       .map(_.toPath)
 
     path shouldBe Some(List("Boston", "Detroit", "Washington", "Miami"))
+
+  test("can search the graph using generic search - A*"):
+    val path = UnweightedGraph
+      .create(vertices, unweightedEdges)
+      .flatMap: g =>
+        import g.given
+        GraphSearch.`A*`[Id, String]("Boston", _ == "Miami")
+      .map(_.toPath)
+
+    path shouldBe Some(List("Boston", "Detroit", "Washington", "Miami"))
+

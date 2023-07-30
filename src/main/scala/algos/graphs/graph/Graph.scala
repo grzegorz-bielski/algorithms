@@ -69,11 +69,18 @@ final case class UnweightedGraph[V](vertices: Vector[V], edges: Vector[Vector[Un
   override def toString(): String =
     vertices.map(v => s"$v -> ${neighborsOf(v).mkString(", ")}").mkString("\n")
 
-  given Searchable[Id, V] with
+  given WeightedSearchable[Id, V] with
     extension (fa: Id[V])
       def value: V = fa
       def successors: Vector[Id[V]] = neighborsOf(value)
 
+      // Cost only depends on the distance between the nodes
+      def cost(prev: Double): Double = prev + 1
+
+      // There is no additional structure the generic unweighted graph,
+      // so we cannot use euclidean distance / manhattan distance or anything like that
+      def heuristic: Double = 0
+      
 object UnweightedGraph:
   def create[V](vertices: Vector[V], edges: Vector[(V, V)]): Option[UnweightedGraph[V]] =
     val init: Option[UnweightedGraph[V]] =
@@ -106,15 +113,6 @@ final case class WeightedGraph[V](vertices: Vector[V], edges: Vector[Vector[Weig
       .map: v =>
         edgesOf(v).map(e => s"$v -> ${e.to} (${e.weight})").mkString(", ")
       .mkString("\n")
-
-  // given WeightedSearchable[Id, V] with
-  //   extension (fa: Id[V])
-  //     def value: V = fa
-  //     def successors: Vector[Id[V]] = neighborsOf(value)
-
-  //     def cost(prev: Double): Double = prev + weight
-
-  //     def heuristic: Double = 1 // TODO: euclidean distance / manhattan distance
 
 object WeightedGraph:
   def create[V](vertices: Vector[V], edges: Vector[(V, V, Double)]): Option[WeightedGraph[V]] =
