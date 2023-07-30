@@ -29,6 +29,8 @@ object GraphSearch:
       def addSuccessors(n: Node[F[T]], _cost: Double) =
         q ++= n.current.successors.map(Node(_, Some(n)))
 
+  /** A* algorithm that finds the shortest path from a specified source to a specified goal based on provided heuristic.
+    */
   def `A*`[F[_], T](root: F[T], p: T => Boolean)(using WeightedSearchable[F, T]) =
     weightedSearch(p):
       new SearchStructure[F, T]:

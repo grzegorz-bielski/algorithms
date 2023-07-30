@@ -2,6 +2,7 @@ package algos.graphs.graph
 
 import org.scalatest.*, funsuite.*, matchers.*
 import algos.graphs.search.*
+import algos.graphs.graph.dijkstra.*
 import algos.*
 
 class GraphSpec extends AnyFunSuite, should.Matchers:
@@ -128,6 +129,19 @@ class GraphSpec extends AnyFunSuite, should.Matchers:
     val mst = graph.mst(0)
 
     // println(mst.showOn(graph))
-
     mst.size shouldBe 14
     mst.totalWeight shouldBe 5372
+
+  test("can find the shortest path in a weighted Graph"):
+    val graph = WeightedGraph.create(vertices, weightedEdges).getOrElse(fail("Graph creation failed"))
+
+    val path = graph.path(from = "Los Angeles", to = "Boston")
+
+    assert(path.map(_._3).sum == 2605)
+
+    path shouldBe Vector(
+      ("Los Angeles", "Riverside", 50.0),
+      ("Riverside", "Chicago", 1704.0),
+      ("Chicago", "Detroit", 238.0),
+      ("Detroit", "Boston", 613.0)
+    )

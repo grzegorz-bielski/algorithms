@@ -2,6 +2,10 @@ package algos.graphs
 
 import scala.annotation.tailrec
 
+/** A naive implementation of Dijkstra's algorithm using immutable data structures.
+  *
+  * More generic and performant one available in `algos.graphs.graph.dijkstra`
+  */
 object DijkstraShortestPath:
   type Value = Double
 
