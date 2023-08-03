@@ -7,6 +7,8 @@ enum SelectionType:
   case Tournament
   case RouletteWheel
 
+// TODO: a concurrent version
+
 /** A genetic algorithms framework
   *
   * @param initialPopulation
