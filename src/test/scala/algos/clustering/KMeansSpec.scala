@@ -11,14 +11,31 @@ class KMeansSpec extends AnyFunSuite, should.Matchers:
 
     given Random = Random
 
-    val result = KMeans.run(
-        k = 2,
-        rawPoints = Vector(point1, point2, point3),
-        maxIterations = 100 
+    val clusters = KMeans.run(
+      k = 2,
+      rawPoints = Vector(point1, point2, point3),
+      maxIterations = 100
     )
 
-    println(result)
+    clusters.size shouldBe 2
 
-final case class TestDataPoint(dimensions: Vector[Double]) extends DataPoint:
-    type P = TestDataPoint
-    override def withDimensions(newDimensions: Vector[Double]): P = TestDataPoint(newDimensions)
+    for
+      cluster <- clusters
+      point <- cluster.points
+      (original, dimension) <- point.originals zip point.dimensions
+    yield
+      original should not be dimension
+
+      val originalDimensions =
+        List(point1, point2, point3).flatMap(_.dimensions)
+
+      originalDimensions.contains(original) shouldBe true
+
+final case class TestDataPoint(dimensions: Vector[Double], originals: Vector[Double]) extends DataPoint:
+  type P = TestDataPoint
+
+  def withDimensions(newDimensions: Vector[Double]): P = copy(dimensions = newDimensions)
+
+  override def toString(): String = originals.toString
+object TestDataPoint:
+  def apply(dimensions: Vector[Double]): TestDataPoint = TestDataPoint(dimensions, dimensions)

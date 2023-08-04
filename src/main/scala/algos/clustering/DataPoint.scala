@@ -5,6 +5,8 @@ trait DataPoint:
 
   def dimensions: Vector[Double]
 
+  def originals: Vector[Double]
+
   def withDimensions(newDimensions: Vector[Double]): P
 
   def distance(other: DataPoint): Double =
