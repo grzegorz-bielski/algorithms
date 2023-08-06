@@ -13,7 +13,7 @@ final class Layer(
   def outputs(inputs: Array[Double]): Array[Double] =
     // every neuron in the layer receives the signal from every neuron in the previous layer
     // a pass-through for input layer
-    outputCache = previousLayer.fold(inputs)(_.neurons.map(_.output(inputs)))
+    outputCache = previousLayer.fold(inputs)(_ => neurons.map(_.output(inputs)))
     outputCache
 
   // back-propagation

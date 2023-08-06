@@ -13,9 +13,10 @@ final class Network[T](layers: Array[Layer]):
 
   def predict(inputs: Array[Double], fn: Array[Double] => T): T = fn(outputs(inputs))
 
-  final case class ValidationResult(correct: Int, trials: Int, percentage: Double)
+  final case class ValidationResult(correct: Int, trials: Int, percentage: Double):
+    override def toString(): String = s"Correct: $correct, Trials: $trials, Percentage: $percentage"
 
-  def validate(inputs: Array[Array[Double]], expecteds: Array[Double], fn: Array[Double] => T): ValidationResult =
+  def validate(inputs: Array[Array[Double]], expecteds: Array[T], fn: Array[Double] => T): ValidationResult =
     val correct = inputs
       .zip(expecteds)
       .foldLeft(0):
@@ -51,7 +52,7 @@ object Network:
       Right:
         val layerOf = Layer.create(_, _, learningRate, activationFn, derivativeActivationFn)
         val inputLayer = layerOf(None, layerStructure.head)
-        val layers = (1 to layerStructure.size).foldLeft(Array(inputLayer)): (acc, i) =>
+        val layers = (1 until layerStructure.size).foldLeft(Array(inputLayer)): (acc, i) =>
           acc :+ layerOf(Some(acc.last), layerStructure(i))
 
         Network(layers)
