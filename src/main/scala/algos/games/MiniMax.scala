@@ -45,3 +45,6 @@ object MiniMax:
         yield if result > bestEval then (result, Some(move)) else (bestEval, bestMove)
       .result
       ._2
+
+
+// TODO: add alpha-beta pruning

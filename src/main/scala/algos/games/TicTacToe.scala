@@ -1,8 +1,6 @@
 package algos.games
 
-import scala.util.Random
-
-type Move = Int
+@main def playTTT = CLIGame(TTTBoard.create(), TTTPiece.X, 9).play()
 
 enum TTTPiece extends Piece:
   case X, O, E
@@ -20,7 +18,6 @@ final class TTTBoard(val positions: Vector[TTTPiece], val currentTurn: TTTPiece)
     case (TTTPiece.E, i) => i
 
   lazy val won: Boolean =
-    // TODO: make this generic?
     Vector(
       checkLine(0, 1, 2),
       checkLine(3, 4, 5),
@@ -51,40 +48,3 @@ object TTTBoard:
   val squares = 9
   def create(firstPlayer: TTTPiece = TTTPiece.X): TTTBoard =
     TTTBoard(Vector.fill(squares)(TTTPiece.E), firstPlayer)
-
-object TTTGame:
-  @main def playTTT =
-    val player = TTTPiece.X
-
-    @scala.annotation.tailrec
-    def gameLoop(board: TTTBoard): Unit =
-      board.currentState match
-        case State.Draw =>
-          println("Draw")
-          println(board)
-        case State.Win =>
-          val winner = board.currentTurn.next // prev turn won
-          println(s"Winner: $winner!")
-          println(board)
-        case State.InProgress =>
-          println(s"Turn: ${board.currentTurn}")
-          println(board)
-          val nextMove = board.currentTurn match
-            case `player` => getPlayerMove(board)
-            // best move or random one on error (should not happen in TTT)
-            case _ => MiniMax.findBestMove(board, maxDepth = 100).getOrElse(Random.nextInt(TTTBoard.squares))
-
-          gameLoop(board.move(nextMove))
-
-    gameLoop(TTTBoard.create(player))
-
-  @scala.annotation.tailrec
-  private def getPlayerMove(board: TTTBoard): Move =
-    print("Your move: ")
-    val playerInput = scala.io.StdIn.readLine()
-
-    Option(playerInput).flatMap(_.toIntOption) match
-      case Some(value) if board.legalMoves.contains(value) => value
-      case _ =>
-        println("Illegal move, try again.")
-        getPlayerMove(board)
