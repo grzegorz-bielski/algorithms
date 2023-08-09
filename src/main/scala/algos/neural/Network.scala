@@ -2,6 +2,9 @@ package algos.neural
 
 import scala.util.Random
 
+/**
+  * A feed-forward neural network with back-propagation.
+  */
 final class Network[T](layers: Array[Layer]):
   def train(inputs: Array[Array[Double]], expecteds: Array[Array[Double]]): Unit =
     inputs
