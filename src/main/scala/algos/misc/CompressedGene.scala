@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 // 1 bit: 2 possible values
 // 2 bits: 4 possible values

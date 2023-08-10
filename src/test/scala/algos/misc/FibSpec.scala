@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 import org.scalatest.*, prop.*
 import flatspec.*

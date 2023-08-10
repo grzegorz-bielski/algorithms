@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 sealed trait Fib extends (Int => BigInt)
 object Fib:

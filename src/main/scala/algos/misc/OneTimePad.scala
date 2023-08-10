@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 import java.nio.charset.Charset
 import scala.util.Random

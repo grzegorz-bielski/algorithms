@@ -1,6 +1,10 @@
-package algos.small
+package algos.misc
 
 object Knapsack:
+  // What items could be put into a knapsack with a maximum capacity of 75kg?
+
+  // each item has a weight and a value and could be taken only once
+
   // brute force approach: O(2^n)
   // where n is the number of items
 

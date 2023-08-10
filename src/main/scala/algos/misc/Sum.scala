@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 // In case we hate Gauss summation formula...
 def sum(n: Int): Int =

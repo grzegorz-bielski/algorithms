@@ -1,4 +1,4 @@
-package algos.small
+package algos.misc
 
 import scala.collection.mutable.Stack
 import org.scalatest.*
