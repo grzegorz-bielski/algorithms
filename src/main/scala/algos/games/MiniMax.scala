@@ -11,40 +11,80 @@ object MiniMax:
   enum Mode:
     case Min, Max
 
-  def findBestMove[Move](board: Board[Move], maxDepth: Int = 100): Option[Move] =
+  enum Strategy:
+    case Classic, AlphaBetaPruning
+
+    def algorithm = this match
+      case Classic          => classicMinimax
+      case AlphaBetaPruning => alphaBetaMinimax
+
+  def findBestMove(board: Board[Move], maxDepth: Int, strategy: Strategy = Strategy.Classic): Option[Move] =
     val originalPlayer = board.currentTurn
+    val initialDepth = 1
+    val algorithm = strategy.algorithm
 
-    // format: off
-    def findMove(initial: Double, fn: (Double, Double) => Double)(mode: Mode, board:  Board[Move], depth: Int): TailRec[Double] = 
-      board.legalMoves.foldLeft(done(initial)): (acc, move) =>
-        for
-          best <- acc
-          result <- tailcall(go(mode, board.move(move), depth + 1))
-        yield fn(best, result)
-    // format: on
+    // first maximizing call, keeps track of initial move
+    board.legalMoves
+      .foldLeft((Double.MinValue, Option.empty[Move])): // None should be only returned in case of empty legal moves
+        case ((bestEval, bestMove), move) =>
+          val result = algorithm(Mode.Min, board.move(move), originalPlayer, initialDepth, maxDepth)
+          if result > bestEval then (result, Some(move)) else (bestEval, bestMove)
+      ._2
 
-    // find a move that yields a min possible evaluation
-    def findMin = findMove(Double.MaxValue, math.min)
-    // find a move that yields a max possible evaluation
-    def findMax = findMove(Double.MinValue, math.max)
-
+  private def classicMinimax(mode: Mode, board: Board[Move], originalPlayer: Piece, depth: Int, maxDepth: Int): Double =
     def go(mode: Mode, board: Board[Move], depth: Int): TailRec[Double] =
       if board.gameEnded || depth == maxDepth then done(board.evaluate(originalPlayer))
       else
         mode match
-          case Mode.Min => findMin(Mode.Max, board, depth)
-          case Mode.Max => findMax(Mode.Min, board, depth)
+          case Mode.Min =>
+            board.legalMoves.foldLeft(done(Double.MaxValue)): (acc, move) =>
+              acc.flatMap(best => tailcall(go(Mode.Max, board.move(move), depth + 1)).map(math.min(best, _)))
+          case Mode.Max =>
+            board.legalMoves.foldLeft(done(Double.MinValue)): (acc, move) =>
+              acc.flatMap(best => tailcall(go(Mode.Min, board.move(move), depth + 1)).map(math.max(best, _)))
 
-    // first maximazing call, keeps track of initial move
-    board.legalMoves
-      .foldLeft(done((Double.MinValue, Option.empty[Move]))): (acc, move) =>
-        for
-          _acc <- acc
-          (bestEval, bestMove) = _acc // source:future ?
-          result <- tailcall(go(Mode.Min, board.move(move), 1))
-        yield if result > bestEval then (result, Some(move)) else (bestEval, bestMove)
-      .result
-      ._2
+    go(mode, board, depth).result
 
+  // MiniMax extension with alpha beta pruning
+  // keeps track of alpha and beta variables and decreases the search space
+  // alpha - evaluation of the best maximizing move found so far
+  // beta - evaluation of the best minimizing move found so far
+  // if beta <= alpha, we can stop searching, since best minimizing move will not be greater than the best maximizing move
+  private def alphaBetaMinimax(
+      mode: Mode,
+      board: Board[Move],
+      originalPlayer: Piece,
+      depth: Int,
+      maxDepth: Int
+  ): Double =
+    def go(mode: Mode, board: Board[Move], depth: Int, alpha: Double, beta: Double): TailRec[Double] =
+      if board.gameEnded || depth == maxDepth then done(board.evaluate(originalPlayer))
+      else
+        mode match
+          case Mode.Min =>
+            def findMin(moves: Vector[Move], depth: Int, beta: Double): TailRec[Double] =
+              moves match
+                case move +: rest =>
+                  go(Mode.Max, board.move(move), depth + 1, alpha, beta)
+                    .map(math.min(beta, _))
+                    .flatMap: nextBeta =>
+                      if nextBeta <= alpha then done(nextBeta)
+                      else findMin(rest, depth, nextBeta)
+                case _ => done(beta)
 
-// TODO: add alpha-beta pruning
+            findMin(board.legalMoves, depth, beta)
+
+          case Mode.Max =>
+            def findMax(moves: Vector[Move], depth: Int, alpha: Double): TailRec[Double] =
+              moves match
+                case move +: rest =>
+                  go(Mode.Min, board.move(move), depth + 1, alpha, beta)
+                    .map(math.max(alpha, _))
+                    .flatMap: nextAlpha =>
+                      if beta <= nextAlpha then done(nextAlpha)
+                      else findMax(rest, depth, nextAlpha)
+                case _ => done(alpha)
+
+            findMax(board.legalMoves, depth, alpha)
+
+    go(mode, board, depth = depth, alpha = Double.MinValue, beta = Double.MaxValue).result

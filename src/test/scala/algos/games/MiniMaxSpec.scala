@@ -42,4 +42,5 @@ class MiniMaxSpec extends AnyFunSuite, should.Matchers:
     )
 
     testCases.foreach: (board, expected) =>
-      MiniMax.findBestMove(board) shouldBe Some(expected)
+      MiniMax.Strategy.values.foreach: strategy =>
+        MiniMax.findBestMove(board, maxDepth = 100, strategy = strategy) shouldBe Some(expected)

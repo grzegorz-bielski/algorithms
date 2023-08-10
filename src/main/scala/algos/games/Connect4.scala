@@ -12,6 +12,11 @@ enum C4Piece extends Piece:
     case B => R
     case E => E
 
+  override def toString(): String = this match
+    case R => "R"
+    case B => "B"
+    case E => " "
+
 final case class C4Location(column: Int, row: Int)
 
 final class C4Board(
