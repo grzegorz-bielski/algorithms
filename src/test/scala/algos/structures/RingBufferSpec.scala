@@ -23,3 +23,24 @@ class RingBufferSpec extends AnyFunSuite, should.Matchers:
       buffer.pop shouldBe Some(555)
       buffer.pop shouldBe None
 
+    test("should pass the test workflow 2"):
+      val buffer = RingBuffer2[Int](5)
+
+      buffer.push(123) shouldBe true
+      buffer.push(456) shouldBe true
+      buffer.push(789) shouldBe true
+      buffer.push(666) shouldBe true
+      
+      buffer.pop shouldBe Some(123)
+      buffer.pop shouldBe Some(456)
+      buffer.pop shouldBe Some(789)
+
+      buffer.push(333) shouldBe true
+      buffer.push(555) shouldBe true
+
+      buffer.pop shouldBe Some(666)
+      buffer.pop shouldBe Some(333)
+      buffer.pop shouldBe Some(555)
+      buffer.pop shouldBe None
+    
+
