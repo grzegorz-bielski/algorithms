@@ -5,6 +5,9 @@ import org.scalatest.*, funsuite.*, matchers.*
 class MutableStackSpec extends StackSpec:
   check(MutableStack.empty[Int])
 
+class ConcurrentStackSpec extends StackSpec:
+  check(ConcurrentStack.empty[Int])
+
 trait StackSpec extends AnyFunSuite, should.Matchers:
   def check(_s: Stack[Int]) =
     test("should pass the test workflow"):
