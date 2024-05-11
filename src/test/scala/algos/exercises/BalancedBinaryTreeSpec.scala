@@ -1,4 +1,4 @@
-package algos.leetcode
+package algos.exercises
 package balancedbinarytree
 
 import org.scalatest.*

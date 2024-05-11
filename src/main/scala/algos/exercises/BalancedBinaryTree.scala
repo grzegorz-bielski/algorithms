@@ -1,4 +1,4 @@
-package algos.leetcode.balancedbinarytree
+package algos.exercises.balancedbinarytree
 
 // leetcode 110. Balanced Binary Tree
 
